@@ -2,6 +2,17 @@
 exports.up = function(knex) {
 	return knex.schema.createTable('words', table => {
         table.increments('id').primary()
+        table.string('word').notNull()
+    })
+};
+
+exports.down = function(knex) {
+	return knex.schema.dropTable('words')
+};
+
+/* exports.up = function(knex) {
+	return knex.schema.createTable('words', table => {
+        table.increments('id').primary()
         table.string('desc').notNull()
         table.datetime('estimateAt')
 		table.datetime('doneAt')
@@ -14,3 +25,4 @@ exports.up = function(knex) {
 exports.down = function(knex) {
 	return knex.schema.dropTable('words')
 };
+ */
