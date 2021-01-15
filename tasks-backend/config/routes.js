@@ -52,8 +52,11 @@ module.exports = app => {
     app.route('/words/:taskId/correct')
         .get(app.api.word.verifyCorrect)
 
-    app.route('/words')
+    /* app.route('/words')
         .all(app.config.passport.authenticate())
+        .get(app.api.word.getWords) */
+
+    app.route('/words')
         .get(app.api.word.getWords)
 
     app.route('/words/:id')
