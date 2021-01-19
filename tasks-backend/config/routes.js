@@ -56,7 +56,7 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.word.getWords) */
 
-    app.route('/words')
+    app.route('/wordsAll')
         .get(app.api.word.getWords)
 
     app.route('/words/:id')
