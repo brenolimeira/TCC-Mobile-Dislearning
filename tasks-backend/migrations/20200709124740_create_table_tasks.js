@@ -5,6 +5,10 @@ exports.up = function(knex) {
         table.string('desc').notNull()
         table.datetime('startDate')
         table.datetime('endDate')
+        table.integer('days')
+        table.integer('week')
+        table.integer('daysAll')
+        table.integer('weekAll')
         table.boolean('done')
     })
 };
