@@ -8,6 +8,9 @@ module.exports = app => {
     app.route('/users/:name/name')
         .get(app.api.user.getUsersName)
 
+    app.route('/users/:id')
+        .delete(app.api.user.remove)
+
     app.route('/tasks')
         .post(app.api.task.save)
 
@@ -70,6 +73,12 @@ module.exports = app => {
     app.route('/words/:id/:equalsWords/:taskId/toggle')
         .all(app.config.passport.authenticate())
         .put(app.api.word.toggleWordEquals)
+
+    app.route('/task-words/:idTask')
+        .get(app.api.tasks_words.getTasks)
+
+    app.route('/task-words/:idTask/save')
+        .post(app.api.tasks_words.save)
 
     /* app.route('/words/:taskId/verifyNull')
         .all(app.config.passport.authenticate())
