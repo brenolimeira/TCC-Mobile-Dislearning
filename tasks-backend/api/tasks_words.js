@@ -2,7 +2,7 @@ const moment = require('moment')
 
 module.exports = app => {
 
-    const getTasks = (req, res) => {
+    const getTasksWords = (req, res) => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
         app.db('task_words')
@@ -12,7 +12,7 @@ module.exports = app => {
     }
 
     const save = (req, res) => {
-        if(!req.body.taskId.trim()) {
+        if(!req.body.task_id.trim()) {
             return res.status(400).send('Descrição é um campo obrigatório!')
         }
 
@@ -39,5 +39,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasks, save, remove }
+    return { getTasksWords, save, remove }
 }

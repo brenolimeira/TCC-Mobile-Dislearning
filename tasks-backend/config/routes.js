@@ -14,7 +14,8 @@ module.exports = app => {
     app.route('/tasks')
         .post(app.api.task.save)
 
-    app.route('/tasks/:id')
+    app.route('/tasksUserId')
+        .all(app.config.passport.authenticate())
         .get(app.api.task.getTasksUserId)
 
     app.route('/doneAt')
@@ -25,6 +26,9 @@ module.exports = app => {
 
     app.route('/words/:id/task')
         .get(app.api.word.getWordsTaskId)
+
+    app.route('/wordsTask/:id')
+        .get(app.api.word.getWordsTaskIdt)
 
     app.route('/tasks')
         .all(app.config.passport.authenticate())
@@ -75,7 +79,7 @@ module.exports = app => {
         .put(app.api.word.toggleWordEquals)
 
     app.route('/task-words/:idTask')
-        .get(app.api.tasks_words.getTasks)
+        .get(app.api.tasks_words.getTasksWords)
 
     app.route('/task-words/:idTask/save')
         .post(app.api.tasks_words.save)

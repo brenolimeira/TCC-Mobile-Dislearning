@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, FlatList, StyleSheet, ImageBackground } from 'react-native'
+import { View, FlatList, StyleSheet, ImageBackground, Alert } from 'react-native'
 import axios from 'axios'
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -13,6 +13,7 @@ export default class WordsList extends Component {
 
     state = {
         words: [],
+        wordsId: [],
         tempTaskId: this.props.navigation.state.params,
     }
 
@@ -23,7 +24,7 @@ export default class WordsList extends Component {
     loadWords = async () => {
         try {
             const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59')
-            const res = await axios.get(`${server}/words?date=${maxDate}&taskId=${this.state.tempTaskId.idTask}`)
+            const res = await axios.get(`${server}/wordsTask/${this.state.tempTaskId.idTask}`)
             this.setState({ words: res.data })
         } catch(e) {
             showError(e)

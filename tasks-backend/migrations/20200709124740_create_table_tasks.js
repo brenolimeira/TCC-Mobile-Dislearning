@@ -10,6 +10,7 @@ exports.up = function(knex) {
         table.integer('daysAll')
         table.integer('weekAll')
         table.boolean('done')
+        table.integer('userId').references('id').inTable('users').notNull()
     })
 };
 

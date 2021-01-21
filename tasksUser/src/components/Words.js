@@ -16,7 +16,7 @@ export default props => {
                     <View>
                         {getCheckView(props.doneAt)}
                     </View>
-                    <Text style={[styles.words, doneOrNotStyle]}>{props.desc}</Text>
+                    <Text style={[styles.words, doneOrNotStyle]}>{props.word}</Text>
                 </View>
             </TouchableOpacity>
         </View>

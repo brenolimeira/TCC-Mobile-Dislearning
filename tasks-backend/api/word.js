@@ -11,7 +11,16 @@ module.exports = app => {
     const getWordsTaskId = (req, res) => {
 
         app.db('words')
-            .where({ taskId: req.params.id })
+            .where({ id: req.params.id })
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
+    const getWordsTaskIdt = (req, res) => {
+
+        app.db('words')
+            .join('task_words', 'words.id', '=', 'task_words.word_id')
+            .where('task_words.task_id', '=', req.params.id)
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
     }
@@ -159,7 +168,8 @@ module.exports = app => {
             getWordsTaskId, 
             verifyNotNullDoneAt,
             verifyWrong,
-            verifyCorrect }
+            verifyCorrect,
+            getWordsTaskIdt }
 }
 /* const moment = require('moment')
 

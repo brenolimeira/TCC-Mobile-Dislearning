@@ -2,8 +2,8 @@
 exports.up = function(knex) {
     return knex.schema.createTable('task_images', table => {
         table.increments('id').primary()
-        table.integer('taskId').references('id').inTable('tasks').notNull()
-        table.integer('imageId').references('id').inTable('image').notNull()
+        table.integer('task_id').references('id').inTable('tasks').notNull()
+        table.integer('image_id').references('id').inTable('image').notNull()
     })
 };
 

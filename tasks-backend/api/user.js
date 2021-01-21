@@ -39,6 +39,13 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    /* const getUsersId = (req, res) => {
+        app.db('users')
+            .where({ id: req.params.id })
+            .then(users => res.json(users))
+            .catch(err => res.status(400).json(err))
+    } */
+
     const getUsersName = (req, res) => {
         app.db('users')
             .where('name', 'ilike', `%${req.params.name}%`)

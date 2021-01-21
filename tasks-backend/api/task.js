@@ -23,9 +23,9 @@ module.exports = app => {
 
         app.db('tasks')
             //.where({ userId: req.user.id, estimateAt: date }) adicionar essa linha no final
-            .where({ userId: req.params.id }) //retirar essa linha
-            .where('estimateAt', '<=', date) //retirar essa linha
-            .orderBy('estimateAt')
+            .where({ userId: req.user.id }) //retirar essa linha
+            .where('endDate', '>=', date) //retirar essa linha
+            /* .orderBy('endDate') */
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }

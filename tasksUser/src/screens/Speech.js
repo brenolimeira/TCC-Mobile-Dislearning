@@ -120,7 +120,7 @@ export default class Speech extends Component {
 	}
 
 	verifyWordsEquals = async () => {
-		if(this.state.results === this.state.params.desc) {
+		if(this.state.results === this.state.params.word) {
 			try{
 				await axios.put(`${server}/words/${this.state.params.id}/correct/${this.state.params.taskId}/toggle`)
 			} catch(e) {
@@ -140,11 +140,14 @@ export default class Speech extends Component {
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
-					{this.state.params.desc != '' && this.state.params.image != '' ? 
+					{/* {this.state.params.word != '' ? 
 						<Image style={styles.image} source={this.state.params.image} /> : 
 						<Text style={styles.welcome}>
-							{this.state.params.desc}
-						</Text> }
+							{this.state.params.word}
+						</Text> } */}
+					<Text style={styles.welcome}>
+						{this.state.params.word}
+					</Text>
 					<Text style={styles.instructions}>
 						Clique no microfone para começar a tarefa
 						</Text>

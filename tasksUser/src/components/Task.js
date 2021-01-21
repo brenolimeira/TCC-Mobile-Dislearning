@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 export default props => {
 
     const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through', color: '#AAA' } : {  }
-    const enableOrDisable = props.doneAt != null ? true : false
+    const enableOrDisable = props.days === props.daysAll ? true : false
 
     const date = props.doneAt ? props.doneAt : props.estimateAt
     const formattedDate = moment(date).locale('pt-br').format('ddd, D [de] MMMM')
@@ -18,7 +18,7 @@ export default props => {
             <TouchableOpacity onPress={() => props.onShow(props.id)} disabled={enableOrDisable}>
                 <View style={styles.container}>
                     <View>
-                        {getCheckView(props.doneAt)}
+                        {getCheckView(props.days, props.daysAll)}
                     </View>
                     <Text style={[styles.text, doneOrNotStyle]}>{props.desc}</Text>
                 </View>
@@ -27,8 +27,8 @@ export default props => {
     )
 }
 
-function getCheckView(doneAt) {
-    if(doneAt != null) {
+function getCheckView(days, daysAll) {
+    if(days === daysAll) {
         return (
             <View style={styles.done}>
                 <Icon name='check' size={20} color='#FFF'></Icon>
