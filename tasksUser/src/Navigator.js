@@ -7,6 +7,7 @@ import AuthOrApp from './screens/AuthOrApp'
 import TaskList from './screens/TaskList'
 import Speech from './screens/Speech'
 import WordsList from './screens/WordsList'
+import NavigationTab from './NavigationTab'
 
 import commonStyles from './commonStyles'
 
@@ -30,6 +31,10 @@ const mainRoutes = {
     WordsList: {
         name: 'Words',
         screen: WordsList
+    },
+    NavigationTab: {
+        name: 'NavigationTab',
+        screen: NavigationTab
     }
 }
 
