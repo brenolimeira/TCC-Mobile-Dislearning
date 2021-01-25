@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Alert } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -12,69 +12,69 @@ import Task from '../components/Task'
 import commonStyles from '../commonStyles'
 import { showError, server } from '../common'
 
-export default class TaskList extends Component {
+import { AuthContext } from '../Context'
 
-    state = {
-        tasks: [],
-        words: []
-    }
+export default function TaskList({ navigation }) {
 
-    componentDidMount = async () => {
-        this.loadTasks()
-    }
+    const [tasks, setTasks] = useState([])
 
-    loadTasks = async () => {
+    const { signOut } = useContext(AuthContext)
+
+    useEffect(() => {
+        loadTasks()
+    }, [tasks.id])
+
+    const loadTasks = async () => {
         try {
             const maxDate = moment().add({ days: 0 }).format('YYYY-MM-DD 23:59:59')
             const res = await axios.get(`${server}/tasksUserId`)
-            this.setState({ tasks: res.data })
-        } catch(e) {
+            setTasks(res.data)
+        } catch (e) {
             showError(e)
         }
 
     }
 
-    logout = () => {
+    const logout = () => {
         delete axios.defaults.headers.common['Authorization']
         AsyncStorage.removeItem('userData')
-        this.props.navigation.navigate('AuthOrApp')
+        /* navigation.navigate('AuthOrApp') */
+        signOut()
     }
 
-    showOrHideScreen = taskId => {
-        const tasks = [...this.state.tasks]
+    const showOrHideScreen = taskId => {
+        const tasks1 = [...tasks]
 
-        tasks.forEach(task => {
-            if(task.id === taskId) {
-                this.props.navigation.navigate('WordsList', { idTask: task.id })
+        tasks1.forEach(task => {
+            if (task.id === taskId) {
+                navigation.navigate('WordsList', { idTask: task.id })
+                /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })
     }
+    const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
 
-    render() {
-        const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
-
-        return (
-            <View style={styles.container}>
-                <ImageBackground source={todayImage} style={styles.background}>
-                    <View style={styles.logoutStyle}>
-                        <TouchableOpacity onPress={this.logout}>
-                            <View style={styles.logoutIcon}>
-                                <Icon name='sign-out' size={30} color='#FFF' />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.titleBar}>
-                        <Text style={styles.title}>Hoje</Text>
-                        <Text style={styles.subtitle}>{today}</Text>
-                    </View>
-                </ImageBackground>
-                <View style={styles.tasklist}>
-                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`} 
-                        renderItem={({item}) => <Task {...item} onShow={this.showOrHideScreen} />} /> 
+    return (
+        <View style={styles.container}>
+            <ImageBackground source={todayImage} style={styles.background}>
+                <View style={styles.logoutStyle}>
+                    <TouchableOpacity onPress={logout}>
+                        <View style={styles.logoutIcon}>
+                            <Icon name='sign-out' size={30} color='#FFF' />
+                        </View>
+                    </TouchableOpacity>
                 </View>
+                <View style={styles.titleBar}>
+                    <Text style={styles.title}>Hoje</Text>
+                    <Text style={styles.subtitle}>{today}</Text>
+                </View>
+            </ImageBackground>
+            <View style={styles.tasklist}>
+                <FlatList data={tasks} keyExtractor={item => `${item.id}`}
+                    renderItem={({ item }) => <Task {...item} onShow={showOrHideScreen} />} />
             </View>
-        )
-    }
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
             } catch(e) {
                 showError(e)
             }
-            
+
             if(this.state.words.length === 0) {
                 try{
                     await axios.put(`${server}/tasks/${task.id}/toggle`)
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
             } catch(e) {
                 showError(e)
             }
-            
+
             if(this.state.words.length === 0) {
                 try{
                     await axios.put(`${server}/tasks/${task.id}/toggle`)
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
                 }
             }
             this.setState({ words: [] })
-        }) 
+        })
 
         this.setState(this.state)
     }
@@ -219,8 +219,8 @@ const styles = StyleSheet.create({
                     </View>
                 </ImageBackground>
                 <View style={styles.tasklist}>
-                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`} 
-                        renderItem={({item}) => <Task {...item} onShow={this.showOrHideScreen} />} /> 
+                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`}
+                        renderItem={({item}) => <Task {...item} onShow={this.showOrHideScreen} />} />
                 </View>
             </View>
         )

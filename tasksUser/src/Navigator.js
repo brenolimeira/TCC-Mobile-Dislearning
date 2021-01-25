@@ -1,4 +1,4 @@
-import { createAppContainer, createSwitchNavigator } from 'react-navigation'
+/* import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createDrawerNavigator } from 'react-navigation-drawer'
 import React from 'react'
 
@@ -31,10 +31,6 @@ const mainRoutes = {
     WordsList: {
         name: 'Words',
         screen: WordsList
-    },
-    NavigationTab: {
-        name: 'NavigationTab',
-        screen: NavigationTab
     }
 }
 
@@ -42,4 +38,4 @@ const mainNavigator = createSwitchNavigator(mainRoutes, {
     initialRouteName: 'AuthOrApp'
 })
 
-export default createAppContainer(mainNavigator)
+export default createAppContainer(mainNavigator) */
