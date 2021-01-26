@@ -12,6 +12,7 @@ import Notifications from './screens/Notifications'
 import AuthOrApp from './screens/AuthOrApp'
 import { showError, server } from './common'
 import { AuthContext } from './Context'
+import { Alert } from 'react-native'
 
 const AuthStack = createStackNavigator()
 const Tabs = createBottomTabNavigator()
@@ -61,6 +62,12 @@ export default function NavigationTab({ navigation }) {
             isSignout: true,
             userToken: null,
           };
+        case 'LOGGED':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token
+          }
       }
     },
     {
@@ -79,6 +86,7 @@ export default function NavigationTab({ navigation }) {
       } catch (e) {
 
       }
+      axios.defaults.headers.common['Authorization'] = `bearer ${userToken}`
 
       dispatch({ type: 'RESTORE_TOKEN', token: userToken })
     }
@@ -98,6 +106,8 @@ export default function NavigationTab({ navigation }) {
           AsyncStorage.setItem('userToken', res.data.token)
           AsyncStorage.setItem('userData', JSON.stringify(res.data))
 
+          axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
+
           dispatch({ type: 'SIGN_IN', token: res.data.token })
         } catch (e) {
           showError(e)
@@ -107,6 +117,22 @@ export default function NavigationTab({ navigation }) {
       signUp: async () => {
 
       },
+      logged: async () => {
+        const userDataJson = await AsyncStorage.getItem('userData')
+        let userData = null
+
+        try {
+            userData = JSON.parse(userDataJson)
+        } catch(e) {
+            //UserData está inválido
+        }
+
+        if(userData && userData.token) {
+            axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
+        } 
+
+        dispatch({ type: 'LOGGED', token: userData.token })
+      }
     }),
     []
   )
@@ -119,11 +145,11 @@ export default function NavigationTab({ navigation }) {
             <AuthStack.Screen name="Auth" component={Auth} />
           </AuthStack.Navigator>
         ) : (
-            <Tabs.Navigator>
-              <Tabs.Screen name="Home" component={HomeStackScreen} />
-              <Tabs.Screen name="Notifications" component={NotificationsStackScreen} />
-            </Tabs.Navigator>
-          )}
+              <Tabs.Navigator>
+                <Tabs.Screen name="Home" component={HomeStackScreen} />
+                <Tabs.Screen name="Notifications" component={NotificationsStackScreen} />
+              </Tabs.Navigator>
+            )}
       </NavigationContainer>
     </AuthContext.Provider>
   )

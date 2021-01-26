@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
 import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Alert } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -18,9 +18,30 @@ export default function TaskList({ navigation }) {
 
     const [tasks, setTasks] = useState([])
 
-    const { signOut } = useContext(AuthContext)
+    const { signOut, logged } = useContext(AuthContext)
+
+/*     useEffect(() => {
+
+        const userLoadData = async () => {
+            const userDataJson = await AsyncStorage.getItem('userData')
+            let userData = null
+
+            try {
+                userData = JSON.parse(userDataJson)
+            } catch (e) {
+                //UserData está inválido
+            }
+
+            if (userData && userData.token) {
+                axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
+                
+            }
+        }
+        userLoadData()
+    }) */
 
     useEffect(() => {
+        /* logged() */
         loadTasks()
     }, [tasks.id])
 
@@ -28,9 +49,10 @@ export default function TaskList({ navigation }) {
         try {
             const maxDate = moment().add({ days: 0 }).format('YYYY-MM-DD 23:59:59')
             const res = await axios.get(`${server}/tasksUserId`)
+            /* Alert.alert('aqui2') */
             setTasks(res.data)
         } catch (e) {
-            showError(e)
+            /* showError(e) */
         }
 
     }
@@ -38,6 +60,7 @@ export default function TaskList({ navigation }) {
     const logout = () => {
         delete axios.defaults.headers.common['Authorization']
         AsyncStorage.removeItem('userData')
+        AsyncStorage.removeItem('userToken')
         /* navigation.navigate('AuthOrApp') */
         signOut()
     }
@@ -47,7 +70,7 @@ export default function TaskList({ navigation }) {
 
         tasks1.forEach(task => {
             if (task.id === taskId) {
-                navigation.navigate('WordsList', { idTask: task.id })
+                navigation.push('WordsList', { idTask: task.id })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })
