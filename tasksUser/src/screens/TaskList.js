@@ -70,7 +70,7 @@ export default function TaskList({ navigation }) {
 
         tasks1.forEach(task => {
             if (task.id === taskId) {
-                navigation.push('WordsList', { idTask: task.id })
+                navigation.navigate('WordsList',{ idTask: task.id })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })

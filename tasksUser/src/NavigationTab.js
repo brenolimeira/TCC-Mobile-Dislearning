@@ -5,11 +5,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import Auth from './screens/Auth'
 import TaskList from './screens/TaskList'
 import Notifications from './screens/Notifications'
-import AuthOrApp from './screens/AuthOrApp'
+import WordsList from './screens/WordsList'
+import Speech from './screens/Speech'
+import Loading from './screens/Loading'
 import { showError, server } from './common'
 import { AuthContext } from './Context'
 import { Alert } from 'react-native'
@@ -23,6 +26,8 @@ const Drawer = createDrawerNavigator()
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={TaskList} />
+    <HomeStack.Screen name="WordsList" component={WordsList} />
+    <HomeStack.Screen name="Speech" component={Speech} />
   </HomeStack.Navigator>
 )
 
@@ -33,9 +38,30 @@ const NotificationsStackScreen = () => (
 )
 
 const TabsScreen = () => (
-  <Tabs.Navigator>
-    <Tabs.Screen name="Home" component={HomeStackScreen} />
-    <Tabs.Screen name="Home" component={NotificationsStackScreen} />
+  <Tabs.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Início') {
+          iconName = focused
+            ? 'ios-home'
+            : 'ios-home-outline'
+        } else if (route.name === 'Notificações') {
+          iconName = focused
+            ? 'notifications'
+            : 'notifications-outline'
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />
+      }
+    })}
+    tabBarOptions={{
+      activeTintColor: '#e99f4c',
+      inactiveTintColor: '#0e1627'
+    }} >
+    <Tabs.Screen name="Início" component={TaskList} />
+    <Tabs.Screen name="Notificações" component={Notifications} />
   </Tabs.Navigator>
 )
 
@@ -66,7 +92,8 @@ export default function NavigationTab({ navigation }) {
           return {
             ...prevState,
             isSignout: false,
-            userToken: action.token
+            userToken: action.token,
+            isLoading: true,
           }
       }
     },
@@ -122,14 +149,14 @@ export default function NavigationTab({ navigation }) {
         let userData = null
 
         try {
-            userData = JSON.parse(userDataJson)
-        } catch(e) {
-            //UserData está inválido
+          userData = JSON.parse(userDataJson)
+        } catch (e) {
+          //UserData está inválido
         }
 
-        if(userData && userData.token) {
-            axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
-        } 
+        if (userData && userData.token) {
+          axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
+        }
 
         dispatch({ type: 'LOGGED', token: userData.token })
       }
@@ -137,47 +164,31 @@ export default function NavigationTab({ navigation }) {
     []
   )
 
+  if (state.isLoading) {
+    return <Loading />
+  }
+
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {state.userToken == null ? (
-          <AuthStack.Navigator>
+          <AuthStack.Navigator 
+            screenOptions={{
+              headerShown: false
+            }} >
             <AuthStack.Screen name="Auth" component={Auth} />
           </AuthStack.Navigator>
         ) : (
-              <Tabs.Navigator>
-                <Tabs.Screen name="Home" component={HomeStackScreen} />
-                <Tabs.Screen name="Notifications" component={NotificationsStackScreen} />
-              </Tabs.Navigator>
-            )}
+            <HomeStack.Navigator 
+              screenOptions={{
+                headerShown: false
+              }} >
+              <HomeStack.Screen name="Home" component={TabsScreen} />
+              <HomeStack.Screen name="WordsList" component={WordsList} />
+              <HomeStack.Screen name="Speech" component={Speech} />
+            </HomeStack.Navigator>
+          )}
       </NavigationContainer>
     </AuthContext.Provider>
-  )
-
-  const userDataJson = AsyncStorage.getItem('userData')
-  let userData = null
-
-  try {
-    userData = JSON.parse(userDataJson)
-  } catch (e) {
-    //UserData está inválido
-  }
-
-  return (
-    <NavigationContainer>
-      {userData && userData.token ?
-        axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
-          (
-            <Tabs.Navigator>
-              <Tabs.Screen name="Home" component={HomeStackScreen} />
-              <Tabs.Screen name="Notifications" component={NotificationsStackScreen} />
-            </Tabs.Navigator>
-          ) : (
-          <AuthStack.Navigator>
-            <AuthStack.Screen name="Auth" component={Auth} />
-          </AuthStack.Navigator>
-        )
-      }
-    </NavigationContainer>
   )
 }
