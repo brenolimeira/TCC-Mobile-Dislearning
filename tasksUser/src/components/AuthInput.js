@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     icon: {
-        color: '#333',
+        color: '#FFF',
         marginLeft: 20
     },
     input: {

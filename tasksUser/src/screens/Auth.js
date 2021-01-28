@@ -5,13 +5,16 @@ import {
     StyleSheet,
     View,
     TouchableOpacity,
-    Alert
+    Alert,
+    Image
 } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import backgroundImage from '../../assets/imgs/login.jpg'
+import logo from '../../assets/imgs/260120211.png'
 import commonStyles from '../commonStyles'
 import AuthInput from '../components/AuthInput'
 
@@ -97,26 +100,34 @@ export default function Auth({ navigation }) {
     const validForm = validations.reduce((t, a) => t && a)
 
     return (
-        <ImageBackground source={backgroundImage}
+        <LinearGradient colors={['#0e1627', '#31284c', '#673568', '#a43c74', '#de496e']}
+            start={{ x: 0, y: 0 }}
+            end={{x: 1, y: 1 }}
             style={styles.background}>
-            <Text style={styles.title}>SpeFono</Text>
+            {/* <Image source={logo} style={styles.logo} /> */}
+            {/* <Text style={styles.title}>SpeFono</Text> */}
             <View style={styles.formContainer}>
+                <Image source={logo} style={styles.logo} />
                 <Text style={styles.subtitle}>
                     {stageNew ? 'Crie a sua conta' : 'Informe seus dados'}
                 </Text>
-                {stageNew && <AuthInput icon='user' placeholder='Nome' value={this.state.name}
-                    style={styles.input} onChangeText={name => setName(name)} />
-                }
-                <AuthInput icon='at' placeholder='E-mail' value={email}
-                    style={styles.input} onChangeText={email => setEmail(email)} />
-                <AuthInput icon='lock' placeholder='Senha' value={password}
-                    style={styles.input} secureTextEntry={true} onChangeText={password => setPassword(password)} />
-                {stageNew &&
-                    <AuthInput icon='asterisk'
-                        placeholder='Confirmação de Senha' value={confirmPassword}
-                        style={styles.input} secureTextEntry={true}
-                        onChangeText={confirmPassword => setConfirmPassword(confirmPassword)} />
-                }
+                <View style={styles.inputView}>
+                    {stageNew && <AuthInput icon='user' placeholder='Nome' placeholderTextColor='#FFF' value={name}
+                        style={styles.input} onChangeText={name => setName(name)} />
+                    }
+                    <AuthInput icon='at' placeholder='E-mail' placeholderTextColor='#FFF' value={email}
+                        style={styles.input} onChangeText={email => setEmail(email)} />
+                    <AuthInput icon='lock' placeholder='Senha' placeholderTextColor='#FFF'
+                        value={password} 
+                        style={styles.input} secureTextEntry={true} onChangeText={password => setPassword(password)} />
+                    {stageNew &&
+                        <AuthInput icon='asterisk'
+                            placeholder='Confirmação de Senha' placeholderTextColor='#FFF'
+                            value={confirmPassword}
+                            style={styles.input} secureTextEntry={true}
+                            onChangeText={confirmPassword => setConfirmPassword(confirmPassword)} />
+                    }
+                </View>
                 <TouchableOpacity onPress={signinOrSignup}
                     disabled={!validForm}>
                     <View style={[styles.button, validForm ? {} : { backgroundColor: '#AAA' }]}>
@@ -131,7 +142,7 @@ export default function Auth({ navigation }) {
                     {stageNew ? 'Já possui conta?' : 'Ainda não possui conta?'}
                 </Text>
             </TouchableOpacity>
-        </ImageBackground>
+        </LinearGradient>
     )
 
 }
@@ -141,12 +152,19 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     title: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.secondary,
         fontSize: 70,
+        marginBottom: 10
+    },
+    logo: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        resizeMode: 'center',
         marginBottom: 10
     },
     subtitle: {
@@ -157,13 +175,17 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     formContainer: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
         padding: 20,
-        width: '90%'
+        width: '90%',
+        height: '60%'
+    },
+    inputView: {
+        backgroundColor: 'rgba(0,0,0,0)',
     },
     input: {
         marginTop: 10,
-        backgroundColor: '#FFF',
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     button: {
         backgroundColor: '#080',
