@@ -1,3 +1,8 @@
+const multer = require('multer')
+const { storage } = require('./upload')
+
+const upload = multer({ storage: storage })
+
 module.exports = app => {
     app.post('/signup', app.api.user.save)
     app.post('/signin', app.api.auth.signin)
@@ -83,6 +88,15 @@ module.exports = app => {
 
     app.route('/task-words/:idTask/save')
         .post(app.api.tasks_words.save)
+
+    app.route('/images-all')
+        .get(app.api.images.getImages)
+
+    app.route('/processes-all')
+        .get(app.api.processes.getProcesses)
+
+    app.route('/save-image')
+        .post(upload.array('image'), app.api.images.save)
 
     /* app.route('/words/:taskId/verifyNull')
         .all(app.config.passport.authenticate())
