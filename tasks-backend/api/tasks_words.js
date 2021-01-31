@@ -12,8 +12,8 @@ module.exports = app => {
     }
 
     const save = (req, res) => {
-        if(!req.body.task_id.trim()) {
-            return res.status(400).send('Descrição é um campo obrigatório!')
+        if(!req.body.task_id) {
+            return res.status(400).send('Task Id é um campo obrigatório!')
         }
 
         /* req.body.userId = req.user.id */
