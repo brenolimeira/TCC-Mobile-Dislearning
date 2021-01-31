@@ -95,6 +95,9 @@ module.exports = app => {
     app.route('/processes-all')
         .get(app.api.processes.getProcesses)
 
+    app.route('/processe-save')
+        .post(app.api.processes.save)
+
     app.route('/save-image')
         .post(upload.array('image'), app.api.images.save)
 

@@ -6,14 +6,12 @@ module.exports = app => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
         app.db('tasks')
-            .orderBy('startDate')
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }
 
     const getTasksAll = (req, res) => {
         app.db('tasks')
-            .orderBy('startDate')
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }
@@ -39,8 +37,8 @@ module.exports = app => {
     }
 
     const save = (req, res) => {
-        if(!req.body.desc.trim()) {
-            return res.status(400).send('Descrição é um campo obrigatório!')
+        if(!req.body.name.trim()) {
+            return res.status(400).send('Nome é um campo obrigatório!')
         }
 
         /* req.body.userId = req.user.id */

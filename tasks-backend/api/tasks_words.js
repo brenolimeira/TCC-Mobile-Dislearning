@@ -26,7 +26,7 @@ module.exports = app => {
 
     const remove = (req, res) => {
         app.db('tasks')
-            .where({ id: req.params.id, userId: req.user.id })
+            .where({ id: req.params.id })
             .del()
             .then(rowsDeleted => {
                 if(rowsDeleted > 0) {
