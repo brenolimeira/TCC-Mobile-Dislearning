@@ -28,6 +28,9 @@ module.exports = app => {
 
     app.route('/tasksAll')
         .get(app.api.task.getTasksAll)
+    
+    app.route('/tasks-processe/:processeId')
+        .get(app.api.task.getTasksProcesseId)
 
     app.route('/words/:id/task')
         .get(app.api.word.getWordsTaskId)
@@ -100,6 +103,9 @@ module.exports = app => {
 
     app.route('/save-image')
         .post(upload.array('image'), app.api.images.save)
+
+    app.route('/task-images/:idTask/save')
+        .post(app.api.tasks_images.save)
 
     /* app.route('/words/:taskId/verifyNull')
         .all(app.config.passport.authenticate())
