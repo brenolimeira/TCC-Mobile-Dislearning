@@ -107,8 +107,7 @@ module.exports = app => {
     app.route('/task-images/:idTask/save')
         .post(app.api.tasks_images.save)
 
-    /* app.route('/words/:taskId/verifyNull')
-        .all(app.config.passport.authenticate())
-        .get(app.api.word.verifyNullDoneAt) */
+    app.route('/task-user')
+        .post(app.api.tasks_users.save)
 
 }
