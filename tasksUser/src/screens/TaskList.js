@@ -17,6 +17,7 @@ import { AuthContext } from '../Context'
 export default function TaskList({ navigation }) {
 
     const [tasks, setTasks] = useState([])
+    const [task, setTask] = useState([])
 
     const { signOut, logged } = useContext(AuthContext)
 
@@ -47,10 +48,11 @@ export default function TaskList({ navigation }) {
 
     const loadTasks = async () => {
         try {
-            const maxDate = moment().add({ days: 0 }).format('YYYY-MM-DD 23:59:59')
-            const res = await axios.get(`${server}/tasksUserId`)
+            await axios(`${server}/task-search-user`).then(resp => {
+                setTasks(resp.data)
+            })
             /* Alert.alert('aqui2') */
-            setTasks(res.data)
+            /* await axios.get(`${server}/task-id/${res.data.id}`) */
         } catch (e) {
             /* showError(e) */
         }
@@ -69,8 +71,8 @@ export default function TaskList({ navigation }) {
         const tasks1 = [...tasks]
 
         tasks1.forEach(task => {
-            if (task.id === taskId) {
-                navigation.navigate('WordsList',{ idTask: task.id })
+            if (task.taskId === taskId) {
+                navigation.navigate('WordsList',{ idTask: task.taskId })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
         flex: 3
     },
     tasklist: {
-        flex: 7
+        flex: 4
     },
     titleBar: {
         flex: 3,

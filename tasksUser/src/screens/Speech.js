@@ -23,7 +23,7 @@ export default function Speech({ route }) {
 	const [end, setEnd] = useState('')
 	const [started, setStarted] = useState('')
 	const [results, setResults] = useState('')
-	const [params, setParams] = useState(route.params)
+	/* const [params, setParams] = useState(route.params) */
 
 	const navigation = useNavigation()
 
@@ -107,7 +107,7 @@ export default function Speech({ route }) {
 
 	const changeDoneAt = async () => {
 		try {
-			await axios.put(`${server}/words/${params.id}/${params.taskId}/toggle`)
+			await axios.put(`${server}/words/${route.params.id}/${route.params.taskId}/toggle`)
 		} catch (e) {
 			showError(e)
 		}
@@ -116,13 +116,13 @@ export default function Speech({ route }) {
 	const verifyWordsEquals = async () => {
 		if (results === params.word) {
 			try {
-				await axios.put(`${server}/words/${params.id}/correct/${params.taskId}/toggle`)
+				await axios.put(`${server}/words/${route.params.id}/correct/${route.params.taskId}/toggle`)
 			} catch (e) {
 				showError(e)
 			}
 		} else {
 			try {
-				await axios.put(`${server}/words/${params.id}/wrong/${params.taskId}/toggle`)
+				await axios.put(`${server}/words/${route.params.id}/wrong/${route.params.taskId}/toggle`)
 			} catch (e) {
 				showError(e)
 			}
@@ -138,7 +138,7 @@ export default function Speech({ route }) {
 							{this.state.params.word}
 						</Text> } */}
 				<Text style={styles.welcome}>
-					{params.word}
+					{route.params.word}
 				</Text>
 				<Text style={styles.instructions}>
 					Clique no microfone para começar a tarefa

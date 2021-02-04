@@ -32,6 +32,9 @@ module.exports = app => {
     app.route('/tasks-processe/:processeId')
         .get(app.api.task.getTasksProcesseId)
 
+    app.route('/task-id/:id')
+        .get(app.api.task.getTaskById)
+
     app.route('/words/:id/task')
         .get(app.api.word.getWordsTaskId)
 
@@ -109,5 +112,9 @@ module.exports = app => {
 
     app.route('/task-user')
         .post(app.api.tasks_users.save)
+
+    app.route('/task-search-user')
+        .all(app.config.passport.authenticate())
+        .get(app.api.tasks_users.getTasksUsers)
 
 }

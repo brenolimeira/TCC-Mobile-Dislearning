@@ -37,7 +37,7 @@ export default function WordsList({ route }) {
     }
 
     const navigateTo = e => {
-        return navigation.navigate('Speech', { ...e })
+        return navigation.navigate('Speech', { id: e.id, word: e.word })
     }
 
     return (

@@ -4,7 +4,7 @@ module.exports = app => {
     const getTasksUsers = (req, res) => {
 
         app.db('tasks_users')
-            .where({ userId: req.params.userId })
+            .where({ userId: req.user.id })
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }

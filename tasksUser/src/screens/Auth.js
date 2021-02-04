@@ -23,14 +23,6 @@ import { AuthContext } from '../Context'
 
 /* import TaskList from './TaskList' */
 
-const initialState = {
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    stageNew: false
-}
-
 export default function Auth({ navigation }) {
 
     const [name, setName] = useState('')
