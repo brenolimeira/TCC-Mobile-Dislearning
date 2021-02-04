@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet, Image, Dimensions } from 'react-native'
 
 import commonStyles from '../commonStyles'
 import moment from 'moment'
@@ -22,18 +22,20 @@ export default props => {
     })
 
     return (
-        <View style={{ backgroundColor: '#18284b' }}>
-            <TouchableOpacity style={styles.touch} onPress={() => props.onShow(props.taskId)} 
-                disabled={enableOrDisable}>
-                <View style={styles.container}>
-                    {/* <View>
-                        {getCheckView(5, 7)}
-                    </View> */}
-                    <Text style={[styles.text, doneOrNotStyle]}>{taskDesc}</Text>
-                </View>
-            </TouchableOpacity>
+        <View style={styles.flats}>
+            <View style={styles.all}>
+                <Text style={styles.taskName}>{taskDesc}</Text>
+                <TouchableOpacity style={styles.touch} onPress={() => props.onShow(props.taskId)} 
+                    disabled={enableOrDisable}>
+                    <View style={styles.container}>
+                        {/* <View>
+                            {getCheckView(5, 7)}
+                        </View> */}
+                        <Text style={[styles.text, doneOrNotStyle]}>Iniciar</Text>
+                    </View>
+                </TouchableOpacity>    
+            </View>
             {/* livro PNG foi desenvolvido por miniaria e vem de <a href="https://pt.pngtree.com">Pngtree.com</a> */}
-            <Image style={styles.image} source={require('../../assets/imgs/—Pngtree—children.png')} />
         </View>
     )
 }
@@ -52,37 +54,55 @@ function getCheckView(days, daysAll) {
     }
 }
 
+const { width, height } = Dimensions.get('screen')
+
 const styles = StyleSheet.create({
+    flats: {
+        width: width,
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginBottom: 30,
+    },
+    all: {
+        width: 345,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: '#FFF',
+        borderRadius: 20,
+        marginBottom: 30,
+    },
     touch: {
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '80%',
     },
     container: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         borderColor: '#de496e',
-        width: '95%',
-        height: 200,
+        width: '100%',
+        height: 50,
         /* borderWidth: 2, */
         borderRadius: 8,
         marginTop: 20,
+        marginBottom: 10,
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         paddingVertical: 10,
         paddingLeft: 10,
-        backgroundColor: '#0e1627'
-    },
-    image: {
-        position: 'absolute',
-        marginTop: 5,
-        marginLeft: 150,
-        width: 110,
-        height: 100
+        backgroundColor: 'rgba(0, 0, 0, 0.2)'
     },
     text: {
         fontFamily: commonStyles.fontFamily,
-        color: '#FFF',
+        color: '#DDD',
         fontSize: 20,
         paddingLeft: 10,
-        justifyContent: 'flex-start'
+    },
+    taskName: {
+        fontFamily: commonStyles.fontFamily,
+        color: '#DDD',
+        fontSize: 20,
+        paddingLeft: 10,
     },
     pending: {
         height: 25,

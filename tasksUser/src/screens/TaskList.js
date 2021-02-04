@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
-import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Animated, Dimensions } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -10,41 +10,78 @@ import axios from 'axios'
 import todayImage from '../../assets/imgs/today.jpg'
 import Task from '../components/Task'
 import commonStyles from '../commonStyles'
-import { showError, server } from '../common'
+import { server } from '../common'
 
 import { AuthContext } from '../Context'
+
+const { width, height } = Dimensions.get('screen')
 
 export default function TaskList({ navigation }) {
 
     const [tasks, setTasks] = useState([])
-    const [task, setTask] = useState([])
 
     const { signOut, logged } = useContext(AuthContext)
 
-/*     useEffect(() => {
-
-        const userLoadData = async () => {
-            const userDataJson = await AsyncStorage.getItem('userData')
-            let userData = null
-
-            try {
-                userData = JSON.parse(userDataJson)
-            } catch (e) {
-                //UserData está inválido
-            }
-
-            if (userData && userData.token) {
-                axios.defaults.headers.common['Authorization'] = `bearer ${userData.token}`
-                
-            }
-        }
-        userLoadData()
-    }) */
+    const scrollx = React.useRef(new Animated.Value(0)).current
 
     useEffect(() => {
         /* logged() */
         loadTasks()
     }, [tasks.id])
+
+    const Indicator = ({ scrollx }) => {
+        return (
+            <View style={{ position: 'absolute', bottom: 1, flexDirection: 'row' }}>
+                {tasks.map((task, i) => {
+                    const inputRange = [(i - 1) * width, i * width, (i + 1) * width]
+                    const scale = scrollx.interpolate({
+                        inputRange,
+                        outputRange: [0.8, 1.4, 0.8],
+                        extrapolate: 'clamp'
+                    })
+
+                    const opacity = scrollx.interpolate({
+                        inputRange,
+                        outputRange: [0.6, 0.9, 0.6],
+                        extrapolate: 'clamp'
+                    })
+                    return (
+                        <Animated.View
+                            key={`Indicator-${task.id}`}
+                            style={{
+                                height: 10,
+                                width: 10,
+                                borderRadius: 5,
+                                backgroundColor: '#ddd',
+                                margin: 10,
+                                transform: [{
+                                    scale
+                                }],
+                                opacity
+                            }} />
+                    )
+                })}
+            </View>
+        )
+    }
+
+    const Square = ({ scrollx }) => {
+        return (
+            <Animated.View
+                style={{
+                    width: height,
+                    height: height,
+                    backgroundColor: '#fff',
+                    borderRadius: 86,
+                    position: 'absolute',
+                    top: -height * 0.7,
+                    left: -height * 0.4,
+                    transform: [{
+                        rotate: '20deg'
+                    }]
+                }} />
+        )
+    }
 
     const loadTasks = async () => {
         try {
@@ -72,7 +109,7 @@ export default function TaskList({ navigation }) {
 
         tasks1.forEach(task => {
             if (task.taskId === taskId) {
-                navigation.navigate('WordsList',{ idTask: task.taskId })
+                navigation.navigate('WordsList', { idTask: task.taskId })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })
@@ -81,7 +118,7 @@ export default function TaskList({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={todayImage} style={styles.background}>
+            {/* <View style={styles.background}>
                 <View style={styles.logoutStyle}>
                     <TouchableOpacity onPress={logout}>
                         <View style={styles.logoutIcon}>
@@ -93,24 +130,46 @@ export default function TaskList({ navigation }) {
                     <Text style={styles.title}>Hoje</Text>
                     <Text style={styles.subtitle}>{today}</Text>
                 </View>
-            </ImageBackground>
-            <View style={styles.tasklist}>
-                <FlatList data={tasks} keyExtractor={item => `${item.id}`}
-                    renderItem={({ item }) => <Task {...item} onShow={showOrHideScreen} />} />
-            </View>
+            </View> */}
+            <Square scrollx={scrollx} />
+            <TouchableOpacity style={styles.logoutTest} onPress={logout}>
+                <View style={styles.logoutIcon}>
+                    <Icon name='sign-out' size={30} color='#b65a76' />
+                </View>
+            </TouchableOpacity>
+            <Image style={styles.image} source={require('../../assets/imgs/—Pngtree—children.png')} />
+            <Text style={styles.text}>Exercícios</Text>
+            <Animated.FlatList data={tasks} keyExtractor={item => `${item.id}`}
+                horizontal scrollEventThrottle={32} pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollx } } }],
+                    { useNativeDriver: false }
+                )}
+                renderItem={({ item }) => <Task {...item} onShow={showOrHideScreen} />} />
+            <Indicator scrollx={scrollx} />
+            {/* <View style={styles.tasklist}> */}
+            {/* <Backdrop scrollx={scrollx} /> */}
+            {/* </View> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#b65a76',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     background: {
-        flex: 3
+        flex: 2,
+        backgroundColor: '#de496e'
     },
     tasklist: {
-        flex: 4
+        flex: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     titleBar: {
         flex: 3,
@@ -130,17 +189,39 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginBottom: 30
     },
+    text: {
+        position: 'relative',
+        top: 350,
+        color: '#DDD',
+        fontFamily: commonStyles.fontFamily,
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
     logoutStyle: {
-        flex: 1,
-        marginTop: 10,
-        marginRight: 10,
-        alignItems: 'flex-end'
+        position: 'absolute',
+        top: 200,
+        width: 30,
+        height: 30
     },
     logoutIcon: {
         marginLeft: 10,
         marginBottom: 10,
-        justifyContent: 'center'
-    }
+    },
+    image: {
+        position: 'absolute',
+        top: 90,
+        marginTop: 5,
+        marginLeft: 150,
+        width: 140,
+        height: 210
+    },
+    logoutTest: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        marginTop: 5,
+        marginLeft: 20,
+    },
 })
 /* export default class TaskList extends Component {
 

@@ -6,7 +6,8 @@ import {
     View,
     TouchableOpacity,
     Alert,
-    Image
+    Image,
+    Dimensions
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -32,6 +33,8 @@ export default function Auth({ navigation }) {
     const [stageNew, setstageNew] = useState(false)
 
     const { signIn, signUp } = useContext(AuthContext)
+
+    const { width, height } = Dimensions.get('screen')
 
     const signinOrSignup = () => {
         if (stageNew) {
@@ -92,6 +95,7 @@ export default function Auth({ navigation }) {
     const validForm = validations.reduce((t, a) => t && a)
 
     return (
+            
         <LinearGradient colors={['#0e1627', '#31284c', '#673568', '#a43c74', '#de496e']}
             start={{ x: 0, y: 0 }}
             end={{x: 1, y: 1 }}
@@ -99,10 +103,12 @@ export default function Auth({ navigation }) {
             {/* <Image source={logo} style={styles.logo} /> */}
             {/* <Text style={styles.title}>SpeFono</Text> */}
             <View style={styles.formContainer}>
+                {/* <Image style={styles.image} source={require('../../assets/imgs/Imagem1.png')} />
+                <Text style={styles.subtitle}>SpeFono</Text> */}
                 <Image source={logo} style={styles.logo} />
-                <Text style={styles.subtitle}>
+                {/* <Text style={styles.subtitle}>
                     {stageNew ? 'Crie a sua conta' : 'Informe seus dados'}
-                </Text>
+                </Text> */}
                 <View style={styles.inputView}>
                     {stageNew && <AuthInput icon='user' placeholder='Nome' placeholderTextColor='#FFF' value={name}
                         style={styles.input} onChangeText={name => setName(name)} />
@@ -119,21 +125,21 @@ export default function Auth({ navigation }) {
                             style={styles.input} secureTextEntry={true}
                             onChangeText={confirmPassword => setConfirmPassword(confirmPassword)} />
                     }
+                    <TouchableOpacity onPress={signinOrSignup}
+                        disabled={!validForm}>
+                        <View style={[styles.button, validForm ? {} : { backgroundColor: '#AAA' }]}>
+                            <Text style={styles.buttonText}>
+                                {stageNew ? 'Registrar' : 'Entrar'}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={signinOrSignup}
-                    disabled={!validForm}>
-                    <View style={[styles.button, validForm ? {} : { backgroundColor: '#AAA' }]}>
-                        <Text style={styles.buttonText}>
-                            {stageNew ? 'Registrar' : 'Entrar'}
-                        </Text>
-                    </View>
+                <TouchableOpacity style={{ marginTop: 20 }} onPress={() => setstageNew(!stageNew)}>
+                    <Text style={styles.buttonText}>
+                        {stageNew ? 'Já possui conta?' : 'Ainda não possui conta?'}
+                    </Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{ padding: 10 }} onPress={() => setstageNew(!stageNew)}>
-                <Text style={styles.buttonText}>
-                    {stageNew ? 'Já possui conta?' : 'Ainda não possui conta?'}
-                </Text>
-            </TouchableOpacity>
         </LinearGradient>
     )
 
@@ -145,6 +151,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#1c329b'
     },
     title: {
         fontFamily: commonStyles.fontFamily,
@@ -153,7 +160,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     logo: {
-        width: '100%',
+        /* width: '100%', */
         alignItems: 'center',
         justifyContent: 'center',
         resizeMode: 'center',
@@ -162,25 +169,27 @@ const styles = StyleSheet.create({
     subtitle: {
         fontFamily: commonStyles.fontFamily,
         color: '#FFF',
-        fontSize: 20,
+        fontSize: 30,
         textAlign: 'center',
-        marginBottom: 10
+        marginBottom: 100,
+        fontWeight: 'bold'
     },
     formContainer: {
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        flex: 1,
+        /* backgroundColor: 'rgba(0, 0, 0, 0.2)', */
         padding: 20,
-        width: '90%',
-        height: '60%'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     inputView: {
         backgroundColor: 'rgba(0,0,0,0)',
     },
     input: {
         marginTop: 10,
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundColor: 'rgba(30,45,80,0.3)',
     },
     button: {
-        backgroundColor: '#080',
+        backgroundColor: '#18284b',
         marginTop: 10,
         padding: 10,
         alignItems: 'center',
@@ -189,7 +198,14 @@ const styles = StyleSheet.create({
     buttonText: {
         fontFamily: commonStyles.fontFamily,
         color: '#FFF',
-        fontSize: 20
+        fontSize: 20,
+        marginTop: 5
+    },
+    image: {
+        width: 300, 
+        height: 300, 
+        marginTop: 20, 
+        resizeMode: 'contain' 
     }
 })
 

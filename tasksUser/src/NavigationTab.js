@@ -57,10 +57,10 @@ const TabsScreen = () => (
       }
     })}
     tabBarOptions={{
-      activeTintColor: '#de496e',
+      activeTintColor: '#dddddd',
       inactiveTintColor: '#dddddd',
       style: {
-        backgroundColor: '#0e1627'
+        backgroundColor: '#b65a76'
       }
     }} >
     <Tabs.Screen name="Início" component={TaskList} />
