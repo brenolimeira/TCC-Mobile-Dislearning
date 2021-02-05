@@ -26,6 +26,7 @@ export default function TaskList({ navigation }) {
 
     useEffect(() => {
         /* logged() */
+        AsyncStorage.removeItem('itemsTask')
         loadTasks()
     }, [tasks.id])
 
@@ -106,6 +107,13 @@ export default function TaskList({ navigation }) {
 
     const showOrHideScreen = taskId => {
         const tasks1 = [...tasks]
+
+        /* const res = axios.get(`${server}/wordsTask/${taskId}`)
+
+        AsyncStorage.setItem('itemsTask', JSON.stringify(res.data))
+        AsyncStorage.setItem('list', 0)
+
+        navigation.navigate('Speech') */
 
         tasks1.forEach(task => {
             if (task.taskId === taskId) {

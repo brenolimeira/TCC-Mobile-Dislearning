@@ -16,6 +16,7 @@ import { showError, server } from '../common'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import commonStyles from '../commonStyles'
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function Speech({ route }) {
 
@@ -23,6 +24,9 @@ export default function Speech({ route }) {
 	const [end, setEnd] = useState('')
 	const [started, setStarted] = useState('')
 	const [results, setResults] = useState('')
+	const [items, setItems] = useState(AsyncStorage.getItem('itemsTask'))
+
+	const list = AsyncStorage.getItem('list')
 	/* const [params, setParams] = useState(route.params) */
 
 	const navigation = useNavigation()

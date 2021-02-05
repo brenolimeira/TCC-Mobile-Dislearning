@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, FlatList, StyleSheet, ImageBackground, Alert } from 'react-native'
+import { View, FlatList, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import moment from 'moment'
@@ -23,7 +23,8 @@ export default function WordsList({ route }) {
         }
 
         componentDidMount()
-    }, [])
+        /* words.shift() */
+    }, [words])
 
 
     const loadWords = async () => {
@@ -49,6 +50,9 @@ export default function WordsList({ route }) {
                 <FlatList data={words} keyExtractor={item => `${item.id}`}
                     renderItem={({ item }) => <Words {...item} onNavigate={navigateTo} />} />
             </View>
+            {/* <TouchableOpacity onPress={() => words.shift()}>
+                <Text>Teste</Text>
+            </TouchableOpacity> */}
         </View>
     )
 }
