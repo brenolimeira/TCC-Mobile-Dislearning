@@ -24,7 +24,7 @@ export default function WordsList({ route }) {
 
         componentDidMount()
         /* words.shift() */
-    }, [words])
+    }, [])
 
 
     const loadWords = async () => {
@@ -43,12 +43,14 @@ export default function WordsList({ route }) {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={wordsRepeat} style={styles.background}>
-
-            </ImageBackground>
+            <View style={styles.background}>
+                
+            </View>
             <View style={styles.listWords}>
-                <FlatList data={words} keyExtractor={item => `${item.id}`}
-                    renderItem={({ item }) => <Words {...item} onNavigate={navigateTo} />} />
+                <FlatList numColumns={2} data={words} keyExtractor={item => `${item.id}`}
+                    renderItem={({ item }) => <Words {...item} days={route.params.days}
+                    taskId={tempTaskId} 
+                    size={words.length} onNavigate={navigateTo} />} />
             </View>
             {/* <TouchableOpacity onPress={() => words.shift()}>
                 <Text>Teste</Text>
@@ -57,15 +59,19 @@ export default function WordsList({ route }) {
     )
 }
 
+// '#0e1627', '#31284c', '#673568', '#a43c74', '#de496e'
+
 const styles = StyleSheet.create({
     container: {
         flex: 1
     },
     background: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#31284c'
     },
     listWords: {
-        flex: 2
+        flex: 2,
+        backgroundColor: '#b65a76'
     }
 })
 

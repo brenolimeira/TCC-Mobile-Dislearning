@@ -26,7 +26,7 @@ export default function TaskList({ navigation }) {
 
     useEffect(() => {
         /* logged() */
-        AsyncStorage.removeItem('itemsTask')
+        /* AsyncStorage.removeItem('itemsTask') */
         loadTasks()
     }, [tasks.id])
 
@@ -117,7 +117,7 @@ export default function TaskList({ navigation }) {
 
         tasks1.forEach(task => {
             if (task.taskId === taskId) {
-                navigation.navigate('WordsList', { idTask: task.taskId })
+                navigation.navigate('WordsList', { idTask: task.taskId, days: task.daysAll })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })
@@ -146,7 +146,7 @@ export default function TaskList({ navigation }) {
                 </View>
             </TouchableOpacity>
             <Image style={styles.image} source={require('../../assets/imgs/—Pngtree—children.png')} />
-            <Text style={styles.text}>Exercícios</Text>
+            <Text style={styles.text}>Tarefas</Text>
             <Animated.FlatList data={tasks} keyExtractor={item => `${item.id}`}
                 horizontal scrollEventThrottle={32} pagingEnabled
                 showsHorizontalScrollIndicator={false}

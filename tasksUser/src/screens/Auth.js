@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(30,45,80,0.3)',
     },
     button: {
-        backgroundColor: '#18284b',
+        backgroundColor: '#31284c',
         marginTop: 10,
         padding: 10,
         alignItems: 'center',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
         fontFamily: commonStyles.fontFamily,
         color: '#FFF',
         fontSize: 20,
-        marginTop: 5
+        marginTop: 5,
     },
     image: {
         width: 300, 

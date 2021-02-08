@@ -1,22 +1,45 @@
-import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import commonStyles from '../commonStyles'
+import { server, showError } from '../common'
 
 export default props => {
 
+    const [countDone, setCountDone] = useState([])
+
     const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through', color: '#AAA' } : {  }
-    const enableOrDisable = props.doneAt != null ? true : false
+    const enableOrDisable = countDone.length === props.days ? true : false
+
+
+    useEffect(() => {
+        getDoneTasksWords()
+    }, [countDone.length])
+
+    const getDoneTasksWords = async () => {
+    
+        try{
+            await axios(`${server}/task-words-done/${props.taskId}/done/${props.id}`).then(resp => {
+                setCountDone(resp.data)
+            })
+        } catch(e) {
+            showError(e)
+        }
+    }
 
     return (
-        <View>
-            <TouchableOpacity disabled={enableOrDisable} onPress={() => props.onNavigate(props)}>
-                <View style={styles.container}>
-                    <View>
+        <View style={styles.container}>
+            <TouchableOpacity disabled={enableOrDisable} 
+                onPress={() => props.onNavigate(props)}>
+                <View style={styles.inside}>
+                    {/* <View>
                         {getCheckView(props.doneAt)}
-                    </View>
+                    </View> */}
                     <Text style={[styles.words, doneOrNotStyle]}>{props.word}</Text>
+                    <Text style={styles.words}></Text>
+                    <Text style={styles.words}>{`${countDone.length} de ${props.days} concluídos asdsa`}</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -39,20 +62,26 @@ function getCheckView(doneAt) {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        borderColor: '#AAA',
-        borderBottomWidth: 1,
         alignItems: 'center',
-        paddingVertical: 10,
-        paddingLeft: 10,
-        backgroundColor: '#FFF'
+    },
+    inside: {
+        /* flexDirection: 'column', */
+        flexBasis: 0,
+        borderColor: '#AAA',
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+        margin: 8,
+        width: 180,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
     words: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.mainText,
-        fontSize: 20,
-        paddingLeft: 10,
-        justifyContent: 'flex-start'
+        fontSize: 18,
+        textAlign: 'center',
+        color: '#FFF'
     },
     pending: {
         height: 25,

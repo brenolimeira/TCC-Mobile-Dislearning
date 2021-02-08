@@ -117,4 +117,7 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.tasks_users.getTasksUsers)
 
+    app.route('/task-words-done/:taskId/done/:wordId')
+        .get(app.api.tasks_words_done.getTasksWordsDone)
+
 }
