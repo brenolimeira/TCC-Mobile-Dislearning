@@ -39,7 +39,7 @@ export default props => {
                     </View> */}
                     <Text style={[styles.words, doneOrNotStyle]}>{props.word}</Text>
                     <Text style={styles.words}></Text>
-                    <Text style={styles.words}>{`${countDone.length} de ${props.days} concluídos asdsa`}</Text>
+                    <Text style={styles.words}>{`concluídos \n ${countDone.length} de ${props.days}`}</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -67,21 +67,22 @@ const styles = StyleSheet.create({
     inside: {
         /* flexDirection: 'column', */
         flexBasis: 0,
-        borderColor: '#AAA',
-        borderWidth: 1,
+        borderColor: '#b65a76',
+        borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
         margin: 8,
         width: 180,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        /* backgroundColor: 'rgba(0, 0, 0, 0.2)', */
+        borderRadius: 5
     },
     words: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.mainText,
         fontSize: 18,
         textAlign: 'center',
-        color: '#FFF'
+        color: '#b65a76'
     },
     pending: {
         height: 25,
