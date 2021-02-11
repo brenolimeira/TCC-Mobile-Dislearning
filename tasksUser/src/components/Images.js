@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -10,18 +10,18 @@ export default props => {
 
     const [countDone, setCountDone] = useState([])
 
-    const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through', color: '#AAA' } : {  }
+    /* const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through', color: '#AAA' } : {  } */
     const enableOrDisable = countDone.length === props.days ? true : false
 
 
     useEffect(() => {
-        getDoneTasksWords()
+        getDoneTasksImages()
     }, [countDone.length])
 
-    const getDoneTasksWords = async () => {
+    const getDoneTasksImages = async () => {
     
         try{
-            await axios(`${server}/task-words-done/${props.taskId}/word/${props.id}`).then(resp => {
+            await axios(`${server}/task-words-done/${props.taskId}/image/${props.id}`).then(resp => {
                 setCountDone(resp.data)
             })
         } catch(e) {
@@ -37,7 +37,7 @@ export default props => {
                     {/* <View>
                         {getCheckView(props.doneAt)}
                     </View> */}
-                    <Text style={[styles.words, doneOrNotStyle]}>{props.word}</Text>
+                    <Text style={styles.words}>{props.desc}</Text>
                     <Text style={styles.words}></Text>
                     <Text style={styles.words}>{`concluídos \n ${countDone.length} de ${props.days}`}</Text>
                 </View>

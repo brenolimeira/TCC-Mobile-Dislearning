@@ -9,14 +9,14 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    /* const getImagesTaskIdt = (req, res) => {
+    const getImagesTaskIdt = (req, res) => {
 
-        app.db('words')
-            .join('task_words', 'words.id', '=', 'task_words.word_id')
-            .where('task_words.task_id', '=', req.params.id)
+        app.db('image')
+            .join('task_images', 'image.id', '=', 'task_images.image_id')
+            .where('task_images.task_id', '=', req.params.id)
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
-    } */
+    }
 
     const save = async (req, res) => {
         if (!req.body.desc.trim()) {
@@ -89,6 +89,7 @@ module.exports = app => {
     return {
         getImages,
         save,
-        remove
+        remove,
+        getImagesTaskIdt
     }
 }

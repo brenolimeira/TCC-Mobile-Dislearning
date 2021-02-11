@@ -10,6 +10,15 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getTasksImagesDone = (req, res) => {
+        /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
+
+        app.db('tasks_words_done')
+            .where({ task_id: req.params.taskId, image_id: req.params.imageId })
+            .then(task_words_done => res.json(task_words_done))
+            .catch(err => res.status(400).json(err))
+    }
+
     const save = (req, res) => {
         if(!req.body.task_id) {
             return res.status(400).send('Task Id é um campo obrigatório!')
@@ -38,5 +47,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasksWordsDone, save, remove }
+    return { getTasksWordsDone, save, remove, getTasksImagesDone }
 }

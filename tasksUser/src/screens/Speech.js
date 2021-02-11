@@ -9,14 +9,14 @@ import {
 	ScrollView,
 	Image
 } from 'react-native';
-import Voice from 'react-native-voice';
+/* import Voice from 'react-native-voice'; */
+import Voice from '@react-native-community/voice'
 import axios from 'axios'
 import { showError, server } from '../common'
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 import commonStyles from '../commonStyles'
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export default function Speech({ route }) {
 
@@ -24,10 +24,6 @@ export default function Speech({ route }) {
 	const [end, setEnd] = useState('')
 	const [started, setStarted] = useState('')
 	const [results, setResults] = useState('')
-	const [items, setItems] = useState(AsyncStorage.getItem('itemsTask'))
-
-	const list = AsyncStorage.getItem('list')
-	/* const [params, setParams] = useState(route.params) */
 
 	const navigation = useNavigation()
 
@@ -47,8 +43,8 @@ export default function Speech({ route }) {
 			setEnd('√')
 	
 			Alert.alert('Sucesso!', `Tarefa concluída!`)
-			verifyWordsEquals()
-			changeDoneAt()
+			/* verifyWordsEquals()
+			changeDoneAt() */
 			// Acho que terá que navegar para Auth or App
 			// this.props.navigation.navigate('AuthOrApp')
 			navigation.navigate('Home')
@@ -61,15 +57,14 @@ export default function Speech({ route }) {
 			Alert.alert('Erro Voz!', 'Problema ao reconhecer a voz! Tente novamente...')
 		}
 
-		Voice._onSpeechStart = onSpeechStart
-		Voice._onSpeechResults = onSpeechResults
-		Voice._onSpeechEnd = onSpeechEnd
-		Voice._onSpeechError = onSpeechError
+		Voice.onSpeechStart = onSpeechStart
+		Voice.onSpeechStart = onSpeechResults
+		Voice.onSpeechEnd = onSpeechEnd
+		Voice.onSpeechError = onSpeechError
 
 		return () => {
 			Voice.destroy().then(Voice.removeAllListeners)
 		}
-
 	}, [])
 
 	const _startRecognizing = async () => {
@@ -109,7 +104,7 @@ export default function Speech({ route }) {
 
 	}
 
-	const changeDoneAt = async () => {
+	/* const changeDoneAt = async () => {
 		try {
 			await axios.put(`${server}/words/${route.params.id}/${route.params.taskId}/toggle`)
 		} catch (e) {
@@ -131,23 +126,45 @@ export default function Speech({ route }) {
 				showError(e)
 			}
 		}
-	}
+	} */
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<View style={styles.container}>
-				{/* {this.state.params.word != '' ? 
-						<Image style={styles.image} source={this.state.params.image} /> : 
-						<Text style={styles.welcome}>
-							{this.state.params.word}
-						</Text> } */}
-				<Text style={styles.welcome}>
-					{route.params.word}
-				</Text>
-				<Text style={styles.instructions}>
-					Clique no microfone para começar a tarefa
+				<View style={styles.msg}>
+					{ route.params.word !== '' ?
+						<Text style={styles.instructions}>
+							Que palavra é essa ?
 						</Text>
-				<View
+						:
+						<Text style={styles.instructions}>
+							O que tem na imagem ?
+						</Text>
+					}
+				</View>
+				<View style={styles.item}>
+					{ route.params.word !== '' ? 
+						<Text style={styles.welcome}>
+							{route.params.word}
+						</Text> 
+						: 
+						<Image style={styles.image}  source={{
+							uri: route.params.source
+						}} />
+					}
+				</View>
+				<View style={styles.buttonMicro}>
+					<Text style={{ textAlign: 'center', fontSize: 20, color: '#b65a76' }} >{started}</Text>
+					<TouchableHighlight
+						onPress={_startRecognizing}
+						/* style={{ marginVertical: 20 }} */>
+						<View style={styles.button}>
+							<Icon name='play-circle' size={80} color='#b65a76' />
+						</View>
+					</TouchableHighlight>
+					<Text style={styles.startText}>Iniciar</Text>
+				</View>
+				{/* <View
 					style={styles.titleStartEnd}>
 					<Text style={styles.startedText}>
 						{`Iniciado: ${started}`}
@@ -156,34 +173,13 @@ export default function Speech({ route }) {
 						{`Finalizado: ${end}`}
 					</Text>
 				</View>
-				<View style={styles.space} />
-				<TouchableHighlight
-					onPress={_startRecognizing}
-					style={{ marginVertical: 20 }}>
-					<View style={styles.button}>
-						<Icon name='microphone' size={30} color='#FFF' />
-					</View>
-				</TouchableHighlight>
-				<Text style={styles.stat}>Resultado</Text>
+				<View style={styles.space} /> */}
+				{/* <Text style={styles.stat}>Resultado</Text>
 				<ScrollView style={{ marginBottom: 42 }}>
-					{/* {this.state.results.map((result, index) => {
-							return (
-								<Text key={`result-${index}`} style={styles.stat}>
-									{result}
-								</Text>
-							);
-						})} */}
 					<Text style={styles.stat}>
 						{results}
 					</Text>
-				</ScrollView>
-				<View style={styles.buttonCancel}>
-					<TouchableHighlight
-						onPress={_cancelRecognizing}
-						style={{ flex: 1, backgroundColor: 'red' }}>
-						<Text style={styles.action}>Voltar</Text>
-					</TouchableHighlight>
-				</View>
+				</ScrollView> */}
 			</View>
 		</SafeAreaView>
 	);
@@ -191,10 +187,6 @@ export default function Speech({ route }) {
 
 const styles = StyleSheet.create({
 	button: {
-		width: 50,
-		height: 50,
-		borderRadius: 25,
-		backgroundColor: '#B0171F',
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
@@ -202,12 +194,37 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		alignItems: 'center',
-		backgroundColor: '#F5FCFF',
+		backgroundColor: '#FFF',
 	},
-	welcome: {
+	item: {
+		flex: 2,
+		width: '100%',
+		alignItems: 'center',
+		justifyContent: 'center',
+		/* borderBottomWidth: 2,
+		borderBottomColor: '#b65a76', */
+	},
+	msg: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#b65a76',
+		width: '100%'
+	},
+	buttonMicro: {
+		flex: 0.8,
+		justifyContent: 'flex-end'
+	},
+	startText: {
 		fontSize: 20,
 		textAlign: 'center',
-		margin: 10,
+		color: '#b65a76',
+		paddingBottom: 10
+	},
+	welcome: {
+		fontSize: 40,
+		textAlign: 'center',
+		color: '#b65a76'
 	},
 	action: {
 		width: '100%',
@@ -219,10 +236,9 @@ const styles = StyleSheet.create({
 	},
 	instructions: {
 		fontFamily: commonStyles.fontFamily,
-		fontSize: 20,
+		fontSize: 30,
 		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 50,
+		color: '#FFF',
 	},
 	stat: {
 		textAlign: 'center',

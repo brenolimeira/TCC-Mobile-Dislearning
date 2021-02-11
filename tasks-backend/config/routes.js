@@ -107,6 +107,9 @@ module.exports = app => {
     app.route('/save-image')
         .post(upload.array('image'), app.api.images.save)
 
+    app.route('/images-task/:id')
+        .get(app.api.images.getImagesTaskIdt)
+
     app.route('/task-images/:idTask/save')
         .post(app.api.tasks_images.save)
 
@@ -117,7 +120,10 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.tasks_users.getTasksUsers)
 
-    app.route('/task-words-done/:taskId/done/:wordId')
+    app.route('/task-words-done/:taskId/word/:wordId')
         .get(app.api.tasks_words_done.getTasksWordsDone)
+
+    app.route('/task-words-done/:taskId/image/:imageId')
+        .get(app.api.tasks_words_done.getTasksImagesDone)
 
 }

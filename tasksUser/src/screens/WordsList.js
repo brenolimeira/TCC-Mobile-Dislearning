@@ -1,62 +1,99 @@
 import React, { useState, useEffect } from 'react'
-import { View, FlatList, StyleSheet, Animated, Text, Dimensions } from 'react-native'
+import { View, FlatList, StyleSheet, Text, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
-import moment from 'moment'
 import 'moment/locale/pt-br'
 
 import { showError, server } from '../common'
 import Words from '../components/Words'
-import wordsRepeat from '../../assets/imgs/toy-story.jpg'
+import Images from '../components/Images'
 import commonStyles from '../commonStyles'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
-const { width, height } = Dimensions.get('screen')
 
 export default function WordsList({ route }) {
 
     const [words, setWords] = useState([])
+    const [images, setImages] = useState([])
     const [tempTaskId, setTempTaskId] = useState(route.params.idTask)
+    const [nameTask, setNameTask] = useState('')
     const navigation = useNavigation()
 
-    useEffect(() => {
+    const notLengthStyle = words.length === 0 && images.length === 0 ? { alignItems: 'center', justifyContent: 'center', paddingTop: 5 } : {  }
 
+    useEffect(() => {
         const componentDidMount = async () => {
-            loadWords()
+            loadItems()
         }
 
         componentDidMount()
-        /* words.shift() */
     }, [])
 
 
-    const loadWords = async () => {
+    const loadItems = async () => {
         try {
             /* const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59') */
             const res = await axios.get(`${server}/wordsTask/${tempTaskId}`)
-            setWords(res.data)
+            const resp = await axios.get(`${server}/images-task/${tempTaskId}`)
+            
+            if (res.data.length !== 0) {
+                setWords(res.data)
+            } else if (resp.data.length !== 0) {
+                setImages(resp.data)
+            }
+
+            await axios(`${server}/task-id/${tempTaskId}`).then(resp => {
+                setNameTask(resp.data[0].name)
+            })
         } catch (e) {
             showError(e)
         }
     }
 
     const navigateTo = e => {
-        return navigation.navigate('Speech', { id: e.id, word: e.word })
+        return navigation.navigate('Speech', { id: e.id, word: e.word, desc: '' })
+    }
+
+    const navigateToImage = e => {
+        return navigation.navigate('Speech', { id: e.id, word: '' , source: `${server}/uploads/${e.image}` })
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.background}>
                 <View style={styles.animatedView}>
-                    <Text style={styles.title}>Teste</Text>
+                    <Text style={styles.title}>{nameTask}</Text>
                 </View>
-                <View style={styles.rectangleBottom}></View>
+                <View style={styles.selectView}>
+                    <Text style={styles.text}>Selecione um item para iniciar</Text>
+                </View>
             </View>
-            <View style={styles.listWords}>
-                <Text style={styles.text}>Selecione um item para iniciar</Text>
-                <FlatList numColumns={2} data={words} keyExtractor={item => `${item.id}`}
+            <View style={[styles.listWords, notLengthStyle]}>
+
+                {words.length !== 0 ? 
+                    <FlatList numColumns={2} data={words} keyExtractor={item => `${item.id}`}
                     renderItem={({ item }) => <Words {...item} days={route.params.days}
                         taskId={tempTaskId}
                         size={words.length} onNavigate={navigateTo} />} />
+                    : null
+                }
+
+                {images.length !== 0 ?
+                    <FlatList numColumns={2} data={images} keyExtractor={item => `${item.id}`}
+                    renderItem={({ item }) => <Images {...item} days={route.params.days}
+                        taskId={tempTaskId}
+                        size={images.length} onNavigate={navigateToImage} />} />
+                    : null
+                }
+
+                {words.length === 0 && images.length === 0 ? 
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon name='info-circle' size={50} color='#b65a76' />
+                        <Text style={styles.text}>Infelizmente não há nenhum item cadatrado para essa atividade</Text>
+                    </View>  
+                    : null
+                }
+
             </View>
         </View>
     )
@@ -72,6 +109,8 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         backgroundColor: '#FFF',
+        borderBottomWidth: 2,
+        borderBottomColor: '#b65a76'
     },
     animatedView: {
         backgroundColor: '#b65a76',
@@ -80,106 +119,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    rectangleBottom: {
-        position: "absolute",
-        left: -15,
-        bottom: 60,
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: '#b65a76',
-        /* borderBottomWidth: 200,
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
-        borderBottomColor: "#000",
-        borderLeftWidth: 100,
-        borderLeftColor: "#b65a76",
-        borderRightWidth: 100,
-        borderRightColor: "#b65a76",
-        transform: [
-            { rotate: '60deg' }
-        ] */
-    },
     listWords: {
         flex: 2,
-        alignItems: 'center',
-        backgroundColor: '#FFF'
+        backgroundColor: '#FFF',
+        paddingTop: 20
     },
     text: {
         fontFamily: commonStyles.fontFamily,
-        fontSize: 18,
+        fontSize: 22,
         color: '#b65a76',
-        marginTop: 10,
-        marginBottom: 10
+        paddingTop: 30,
+        textAlign: 'center'
+    },
+    selectView: {
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     title: {
         fontFamily: commonStyles.fontFamily,
-        fontSize: 18,
+        fontSize: 30,
         color: '#fff'
     }
 })
-
-
-/* import React, { Component } from 'react'
-import { View, FlatList, StyleSheet, ImageBackground, Alert } from 'react-native'
-import axios from 'axios'
-import moment from 'moment'
-import 'moment/locale/pt-br'
-
-import { showError, server } from '../common'
-import Words from '../components/Words'
-import wordsRepeat from '../../assets/imgs/toy-story.jpg'
-
-
-export default class WordsList extends Component {
-
-    state = {
-        words: [],
-        wordsId: [],
-        tempTaskId: this.props.navigation.state.params,
-    }
-
-    componentDidMount = async () => {
-        this.loadWords()
-    }
-
-    loadWords = async () => {
-        try {
-            const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59')
-            const res = await axios.get(`${server}/wordsTask/${this.state.tempTaskId.idTask}`)
-            this.setState({ words: res.data })
-        } catch(e) {
-            showError(e)
-        }
-    }
-
-    navigateTo = e => {
-        return this.props.navigation.navigate('Speech', {...e})
-    }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <ImageBackground source={wordsRepeat} style={styles.background}>
-
-                </ImageBackground>
-                <View style={styles.listWords}>
-                    <FlatList data={this.state.words} keyExtractor={item => `${item.id}`}
-                        renderItem={({ item }) => <Words {...item} onNavigate={this.navigateTo} />} />
-                </View>
-            </View>
-        )
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    background: {
-        flex: 1
-    },
-    listWords: {
-        flex: 2
-    }
-}) */
