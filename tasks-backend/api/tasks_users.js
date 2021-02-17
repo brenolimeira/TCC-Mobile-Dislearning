@@ -9,6 +9,14 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getTasksUserAll = (req, res) => {
+
+        app.db('tasks_users')
+            .where({ userId: req.params.id })
+            .then(tasks => res.json(tasks))
+            .catch(err => res.status(400).json(err))
+    }
+
     const save = (req, res) => {
         if(!req.body.taskId && !req.body.userId) {
             return res.status(400).send('Task Id é um campo obrigatório!')
@@ -35,5 +43,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasksUsers, save, remove }
+    return { getTasksUsers, getTasksUserAll, save, remove }
 }

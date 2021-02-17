@@ -23,6 +23,14 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getTasksUserFono = (req, res) => {
+        app.db('tasks')
+            .join('tasks_users', 'tasks.id', '=', 'tasks_users.taskId')
+            .where('tasks_users.userId', '=', req.params.id)
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
     const getTasksUserId = (req, res) => {
         const date = req.query.date ? req.query.date : moment().endOf('day').toDate()
 
@@ -104,7 +112,7 @@ module.exports = app => {
     }
 
     return { getTasks, save, remove, toggleTask, getTasksUserId, getTasksDoneAtUser, 
-        getTasksAll, getTasksProcesseId, getTaskById }
+        getTasksAll, getTasksProcesseId, getTaskById, getTasksUserFono }
 }
 /* const moment = require('moment')
 

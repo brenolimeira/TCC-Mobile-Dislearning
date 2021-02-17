@@ -80,6 +80,18 @@ export default function Speech({ route }) {
 		}
 	}
 
+	const _stopRecognizing = async () => {
+		setError('')
+		setStarted('')
+		setResults('')
+		setEnd('')
+
+		const result = await Voice.stop()
+		Voice.removeAllListeners()
+
+		Alert.alert(`resultado: ${result}`)
+	}
+
 	const _cancelRecognizing = async () => {
 		try {
 			await Voice.cancel()

@@ -1,7 +1,9 @@
 const multer = require('multer')
 const { storage } = require('./upload')
+const { storageAudio } = require('./uploadAudio')
 
 const upload = multer({ storage: storage })
+const uploadAudio = multer({ storage: storageAudio })
 
 module.exports = app => {
     app.post('/signup', app.api.user.save)
@@ -119,6 +121,12 @@ module.exports = app => {
     app.route('/task-search-user')
         .all(app.config.passport.authenticate())
         .get(app.api.tasks_users.getTasksUsers)
+
+    app.route('/tasks-user-id/:id')
+        .get(app.api.tasks_users.getTasksUserAll)
+
+    app.route('/tasks-user-fono/:id')
+        .get(app.api.task.getTasksUserFono)
 
     app.route('/task-words-done/:taskId/word/:wordId')
         .get(app.api.tasks_words_done.getTasksWordsDone)
