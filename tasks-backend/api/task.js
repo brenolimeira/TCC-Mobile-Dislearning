@@ -51,6 +51,15 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getTaskProcesse = (req, res) => {
+
+        app.db('tasks')
+            .join('processes', 'tasks.processesId', '=', 'processes.id')
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
+
     const getTasksDoneAtUser = (req, res) => {
 
         app.db('tasks')
@@ -112,7 +121,7 @@ module.exports = app => {
     }
 
     return { getTasks, save, remove, toggleTask, getTasksUserId, getTasksDoneAtUser, 
-        getTasksAll, getTasksProcesseId, getTaskById, getTasksUserFono }
+        getTasksAll, getTasksProcesseId, getTaskById, getTasksUserFono, getTaskProcesse }
 }
 /* const moment = require('moment')
 

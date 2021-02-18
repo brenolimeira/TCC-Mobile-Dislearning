@@ -28,6 +28,9 @@ module.exports = app => {
     app.route('/doneAt')
         .get(app.api.task.getTasksDoneAtUser)
 
+    app.route('/task-processe')
+        .get(app.api.task.getTaskProcesse)
+
     app.route('/tasksAll')
         .get(app.api.task.getTasksAll)
     
