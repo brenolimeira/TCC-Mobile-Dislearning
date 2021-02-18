@@ -58,19 +58,11 @@ module.exports = app => {
     app.route('/words')
         .post(app.api.word.save)
 
-    app.route('/words/:taskId/count1')
-        .get(app.api.word.verifyNullDoneAt)
+    app.route('/wordsDone/:id/done/:word_id')
+        .get(app.api.word.getCountWordDone)
 
-    app.route('/words/:taskId/count2')
-        .get(app.api.word.verifyNotNullDoneAt)
-
-    //verifica a quantidade de palavras que estão com as pronúncias erradas
-    app.route('/words/:taskId/wrong')
-        .get(app.api.word.verifyWrong)
-
-    //verifica a quantidade de palavras que estão com as pronúncias corretas
-    app.route('/words/:taskId/correct')
-        .get(app.api.word.verifyCorrect)
+    app.route('/word-done-count/:id')
+        .get(app.api.word.getCountTest)
 
     /* app.route('/words')
         .all(app.config.passport.authenticate())
@@ -82,14 +74,6 @@ module.exports = app => {
     app.route('/words/:id')
         .all(app.config.passport.authenticate())
         .delete(app.api.word.remove)
-
-    app.route('/words/:id/:taskId/toggle')
-        .all(app.config.passport.authenticate())
-        .put(app.api.word.toggleWord)
-
-    app.route('/words/:id/:equalsWords/:taskId/toggle')
-        .all(app.config.passport.authenticate())
-        .put(app.api.word.toggleWordEquals)
 
     app.route('/task-words/:idTask')
         .get(app.api.tasks_words.getTasksWords)
@@ -133,5 +117,8 @@ module.exports = app => {
 
     app.route('/task-words-done/:taskId/image/:imageId')
         .get(app.api.tasks_words_done.getTasksImagesDone)
+
+    app.route('/task-word-by-id/:id')
+        .get(app.api.tasks_words_done.getWordsId)
 
 }

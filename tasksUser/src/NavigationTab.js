@@ -16,6 +16,7 @@ import Loading from './screens/Loading'
 import { showError, server } from './common'
 import { AuthContext } from './Context'
 import { Alert } from 'react-native'
+import Messages from './screens/Messages'
 
 const AuthStack = createStackNavigator()
 const Tabs = createBottomTabNavigator()
@@ -51,6 +52,10 @@ const TabsScreen = () => (
           iconName = focused
             ? 'notifications'
             : 'notifications-outline'
+        } else {
+          iconName = focused 
+            ? 'chatbubbles'
+            : 'chatbubbles-outline'
         }
 
         return <Ionicons name={iconName} size={size} color={color} />
@@ -65,6 +70,7 @@ const TabsScreen = () => (
     }} >
     <Tabs.Screen name="Início" component={TaskList} />
     <Tabs.Screen name="Notificações" component={Notifications} />
+    <Tabs.Screen name="Menssagens" component={Messages} />
   </Tabs.Navigator>
 )
 

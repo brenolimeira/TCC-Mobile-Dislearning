@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native'
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -60,20 +60,23 @@ function getCheckView(doneAt) {
     }
 }
 
+const { width, height } = Dimensions.get('screen')
+
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
+        width: width,
+        justifyContent: 'center'
     },
     inside: {
         /* flexDirection: 'column', */
-        flexBasis: 0,
         borderColor: '#b65a76',
         borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
         margin: 8,
-        width: 180,
+        width: 200,
         /* backgroundColor: 'rgba(0, 0, 0, 0.2)', */
         borderRadius: 5
     },

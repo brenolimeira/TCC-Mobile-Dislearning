@@ -10,6 +10,16 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getWordsId = (req, res) => {
+        /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
+
+        app.db('tasks_words_done')
+            .where({ id: req.params.id })
+            .first()
+            .then(task_words_done => res.json(task_words_done))
+            .catch(err => res.status(400).json(err))
+    }
+
     const getTasksImagesDone = (req, res) => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
@@ -47,5 +57,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasksWordsDone, save, remove, getTasksImagesDone }
+    return { getTasksWordsDone, save, remove, getTasksImagesDone, getWordsId }
 }
