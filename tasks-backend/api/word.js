@@ -8,6 +8,15 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getWordById = (req, res) => {
+
+        app.db('words')
+            .where({ id: req.params.id })
+            .first()
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
     const getWordsTaskId = (req, res) => {
 
         app.db('words')
@@ -51,6 +60,18 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const update = (req, res, word) => {
+        if(!req.body.word.trim()) {
+            return res.status(400).send('Palavra é um campo obrigatório!')
+        }
+
+        app.db('words')
+            .where({ id: req.params.id })
+            .update({ word: req.body.word })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
     const save = (req, res) => {
         if(!req.body.word.trim()) {
             return res.status(400).send('Descrição é um campo obrigatório!')
@@ -70,7 +91,7 @@ module.exports = app => {
                 if(rowsDeleted > 0) {
                     res.status(204).send()
                 } else {
-                    const msg = `Não foi encontrada task com id ${req.params.id}`
+                    const msg = `Não foi encontrada palavra com id ${req.params.id}`
                     res.status(400).send(msg)
                 }
             })
@@ -80,10 +101,12 @@ module.exports = app => {
     return { getWords, 
             save, 
             remove, 
+            update, 
             getWordsTaskId, 
             getWordsTaskIdt, 
             getCountWordDone,
-            getCountTest }
+            getCountTest, 
+            getWordById }
 }
 /* const moment = require('moment')
 

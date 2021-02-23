@@ -4,9 +4,9 @@ exports.up = function(knex) {
         table.increments('id').primary()
         table.datetime('dateDone')
         table.text('sound')
-        table.integer('task_id').references('id').inTable('tasks').notNull()
-        table.integer('word_id').references('id').inTable('words')
-        table.integer('image_id').references('id').inTable('image')
+        table.integer('task_id').references('id').inTable('tasks').notNull().onUpdate('CASCADE').onDelete('CASCADE')
+        table.integer('word_id').references('id').inTable('words').onUpdate('CASCADE').onDelete('CASCADE')
+        table.integer('image_id').references('id').inTable('image').onUpdate('CASCADE').onDelete('CASCADE')
     })
 };
 

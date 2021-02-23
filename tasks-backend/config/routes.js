@@ -46,6 +46,12 @@ module.exports = app => {
     app.route('/wordsTask/:id')
         .get(app.api.word.getWordsTaskIdt)
 
+    app.route('/word-by-id/:id')
+        .get(app.api.word.getWordById)
+
+    app.route('/word-set/:id')
+        .put(app.api.word.update)
+
     app.route('/tasks')
         .all(app.config.passport.authenticate())
         .get(app.api.task.getTasks)
@@ -75,7 +81,7 @@ module.exports = app => {
         .get(app.api.word.getWords)
 
     app.route('/words/:id')
-        .all(app.config.passport.authenticate())
+        /* .all(app.config.passport.authenticate()) */
         .delete(app.api.word.remove)
 
     app.route('/task-words/:idTask')

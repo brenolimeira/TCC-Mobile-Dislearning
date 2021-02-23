@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     inside: {
-        /* flexDirection: 'column', */
         borderColor: '#b65a76',
         borderWidth: 2,
         alignItems: 'center',

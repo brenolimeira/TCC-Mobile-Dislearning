@@ -54,6 +54,7 @@ module.exports = app => {
     const getTaskProcesse = (req, res) => {
 
         app.db('tasks')
+            .distinct('tasks.id as id','tasks.name as name', 'tasks.desc as desc', 'processes.name as name_processe')
             .join('processes', 'tasks.processesId', '=', 'processes.id')
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
