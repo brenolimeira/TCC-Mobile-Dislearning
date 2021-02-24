@@ -9,6 +9,48 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getImageById = (req, res) => {
+
+        app.db('image')
+            .where({ id: req.params.id })
+            .first()
+            .then(images => res.json(images))
+            .catch(err => res.status(400).json(err))
+    }
+
+    const update = async (req, res) => {
+
+        const newPath = req.files[0].path.split('.')[0] + '.webp'
+        const returnPath = req.files[0].filename.split('.')[0] + '.webp'
+
+        await sharp(req.files[0].path)
+            .resize({ width: 640, height: 360 })
+            .toFormat('webp')
+            .webp({
+                quality: 60
+            })
+            .toBuffer()
+            .then(data => {
+                fs.access(req.files[0].path, cb => {
+                    if (!cb) {
+                        fs.unlink(req.files[0].path, cb => {
+                            if (cb) console.log(cb)
+                        })
+                    }
+                })
+
+                fs.writeFile(newPath, data, cb => {
+                    if (cb) throw cb
+                })
+            })
+
+        app.db('tasks')
+            .where({ id: req.params.id })
+            .update({ desc: req.body.desc, image: returnPath })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
     const getImagesTaskIdt = (req, res) => {
 
         app.db('image')
@@ -90,6 +132,8 @@ module.exports = app => {
         getImages,
         save,
         remove,
-        getImagesTaskIdt
+        update,
+        getImagesTaskIdt,
+        getImageById
     }
 }

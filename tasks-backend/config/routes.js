@@ -93,6 +93,15 @@ module.exports = app => {
     app.route('/images-all')
         .get(app.api.images.getImages)
 
+    app.route('/image-delete/:id')
+        .delete(app.api.images.remove)
+
+    app.route('/image-by-id/:id')
+        .get(app.api.images.getImageById)
+
+    app.route('/image-edit/:id')
+        .put(upload.array('image'), app.api.images.update)
+
     app.route('/processes-all')
         .get(app.api.processes.getProcesses)
 
