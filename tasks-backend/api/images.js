@@ -44,7 +44,7 @@ module.exports = app => {
                 })
             })
 
-        app.db('tasks')
+        app.db('image')
             .where({ id: req.params.id })
             .update({ desc: req.body.desc, image: returnPath })
             .then(_ => res.status(204).send())
@@ -128,12 +128,34 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const removeImage = (req, res) => {
+        app.db('image')
+            .where({ id: req.params.id })
+            .then(async image => {
+                try {
+                    await fs.access(`uploads/${image[0].image}`, cb => {
+                        if(!cb) {
+                            fs.unlink(`uploads/${image[0].image}`, cb => {
+                                if (cb) console.log(cb)
+                            })
+                        }
+                    })
+                    res.status(204).send()
+                } catch(e) {
+                    const msg = `Não foi encontrado imagem com esse nome ${image[0].image}`
+                    res.status(400).send(msg)
+                }
+            })
+            .catch(err => res.status(400).json(err))
+    }
+
     return {
         getImages,
         save,
         remove,
         update,
         getImagesTaskIdt,
-        getImageById
+        getImageById,
+        removeImage
     }
 }

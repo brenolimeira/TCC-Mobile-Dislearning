@@ -114,6 +114,9 @@ module.exports = app => {
     app.route('/images-task/:id')
         .get(app.api.images.getImagesTaskIdt)
 
+    app.route('/images-delete-file/:id')
+        .delete(app.api.images.removeImage)
+
     app.route('/task-images/:idTask/save')
         .post(app.api.tasks_images.save)
 
@@ -138,5 +141,17 @@ module.exports = app => {
 
     app.route('/task-word-by-id/:id')
         .get(app.api.tasks_words_done.getWordsId)
+
+    app.route('/save-audio')
+        .post(uploadAudio.array('audio') ,app.api.audio.save)
+
+    app.route('/audios-all')
+        .get(app.api.audio.getAudios)
+
+    app.route('/audio-delete/:id')
+        .delete(app.api.audio.remove)
+
+    app.route('/audio-delete-file/:id')
+        .delete(app.api.audio.removeAudio)
 
 }

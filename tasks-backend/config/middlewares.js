@@ -9,4 +9,5 @@ module.exports = app => {
         origin: '*'
     }))
     app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
+    app.use('/audios', express.static(path.join(__dirname, '..', 'audios')))
 }
