@@ -9,6 +9,8 @@ module.exports = app => {
     app.post('/signup', app.api.user.save)
     app.post('/signin', app.api.auth.signin)
 
+    app.post('/signin-fono', app.api.authFono.signin)
+
     app.route('/users')
         .get(app.api.user.getUsers)
 

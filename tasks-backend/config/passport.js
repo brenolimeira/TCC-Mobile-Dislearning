@@ -23,7 +23,22 @@ module.exports = app => {
             .catch(err => done(err, false))
     })
 
+    const strategy2 = new Strategy(params, (payload, done) => {
+        app.db('fono')
+            .where({ id: payload.id })
+            .first()
+            .then(fono => {
+                if(fono) {
+                    done(null, { id: fono.id, email: fono.email })
+                } else {
+                    done(null, false)
+                }
+            })
+            .catch(err => done(err, false))
+    })
+
     passport.use(strategy)
+    passport.use(strategy2)
 
     return {
         initialize: () => passport.initialize(),
