@@ -1,4 +1,3 @@
-const moment = require('moment')
 
 module.exports = app => {
 
@@ -6,7 +5,7 @@ module.exports = app => {
 
         app.db('messages')
             .where({ fono_id: req.user.id, user_id: req.params.patient_id })
-            .orderBy('createAt')
+            .orderBy('createdAt')
             .then(messages => res.json(messages))
             .catch(err => res.status(400).json(err))
     }
@@ -14,8 +13,8 @@ module.exports = app => {
     const getMessagesPatient = (req, res) => {
 
         app.db('messages')
-            .where({ fono_id: req.params.fono_id, user_id: req.user.id }) 
-            .orderBy('createAt')
+            .where({ user_id: req.user.id }) 
+            .orderBy('createdAt')
             .then(messages => res.json(messages))
             .catch(err => res.status(400).json(err))
     }
@@ -27,8 +26,9 @@ module.exports = app => {
 
         app.db('messages')
             .insert({
-                createAt: req.body.createAt,
+                createdAt: req.body.createdAt,
                 text: req.body.text,
+                type_sender: req.body.type_sender,
                 user_id: req.body.patient_id,
                 fono_id: req.user.id
             })
@@ -43,8 +43,9 @@ module.exports = app => {
 
         app.db('messages')
             .insert({
-                createAt: req.body.createAt,
+                createdAt: req.body.createAt,
                 text: req.body.text,
+                type_sender: req.body.type_sender,
                 user_id: req.user.id,
                 fono_id: req.body.fono_id
             })

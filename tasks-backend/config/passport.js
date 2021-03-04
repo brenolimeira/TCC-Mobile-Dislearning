@@ -38,7 +38,7 @@ module.exports = app => {
     })
 
     passport.use(strategy)
-    passport.use(strategy2)
+    passport.use(strategy2) 
 
     return {
         initialize: () => passport.initialize(),

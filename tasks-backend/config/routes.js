@@ -156,4 +156,20 @@ module.exports = app => {
     app.route('/audio-delete-file/:id')
         .delete(app.api.audio.removeAudio)
 
+    app.route('/messages-fono/:patient_id')
+        .all(app.config.passport.authenticate())
+        .get(app.api.messages.getMessagesFono)
+
+    app.route('/messages-patient')
+        .all(app.config.passport.authenticate())
+        .get(app.api.messages.getMessagesPatient)
+
+    app.route('/message-send-fono')
+        .all(app.config.passport.authenticate())
+        .post(app.api.messages.saveMsgFono)
+
+    app.route('/message-send-patient')
+        .all(app.config.passport.authenticate())
+        .post(app.api.messages.saveMsgPatient)
+
 }
