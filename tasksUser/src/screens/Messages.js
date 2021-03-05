@@ -1,23 +1,56 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import { server, showError } from '../common'
+import socketIOCLient from 'socket.io-client'
+import moment from 'moment'
+import commonStyles from '../commonStyles'
 
 export default function Messages() {
 
     const [messageSend, setMessageSend] = useState('')
     const [messages, setMessages] = useState([])
+    const [user, setUser] = useState([])
+    const scrollRef = useRef()
+    const socketRef = useRef()
+
+    useEffect(() => {
+        socketRef.current = socketIOCLient(server)
+
+        socketRef.current.on("chat messages", message => {
+            setMessages(message)
+        })
+
+        return () => {
+            socketRef.current.disconnect()
+        }
+    }, [messages.length])
 
     useEffect(() => {
         axios(`${server}/messages-patient`).then(resp => {
             setMessages(resp.data)
         })
+
+        axios(`${server}/user-by-id`).then(resp => {
+            setUser(resp.data)
+        })
+
+        scrollRef.current.scrollToEnd({ animated: true })
+
     }, [messages.length])
 
-    const sendMessages = async () => {
+    const sendMessages = () => {
 
-        try {
+        socketRef.current.emit("chat messages", {
+            createdAt: new Date(),
+            text: messageSend,
+            type_sender: 'patient',
+            patient_id: user.id,
+            fono_id: 1
+        })
+
+        /* try {
             await axios.post(`${server}/message-send-patient`, {
                 createdAt: new Date(),
                 text: messageSend,
@@ -30,20 +63,25 @@ export default function Messages() {
             })
         } catch (e) {
             showError(e)
-        }
+        } */
         setMessageSend('')
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.messages}>
-                <ScrollView>
+                <ScrollView ref={scrollRef}>
                     {messages.map(msg => {
                         return (
-                            <View key={msg.id} style={msg.type_sender === 'patient' ? styles.msgs_sent : styles.msgs_received}>
-                                <Text style={msg.type_sender === 'patient' ? styles.msg_sent : styles.msg_received}>
-                                    {msg.text}
-                                </Text>
+                            <View key={msg.id}>
+                                <View style={msg.type_sender === 'patient' ? styles.msgs_sent : styles.msgs_received}>
+                                    <Text style={msg.type_sender === 'patient' ? styles.msg_sent : styles.msg_received}>
+                                        {msg.text}
+                                    </Text>
+                                </View>
+                                <View style={msg.type_sender === 'patient' ? styles.msgs_sent : styles.msgs_received}>
+                                    <Text style={styles.date}>{moment(msg.createdAt).format('DD/MM HH:mm')}</Text>
+                                </View>
                             </View>
                         )
                     })}
@@ -96,6 +134,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     msg_sent: {
+        fontFamily: commonStyles.fontFamily,
         marginRight: 5,
         marginTop: 5,
         lineHeight: 24,
@@ -107,6 +146,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     msg_received: {
+        fontFamily: commonStyles.fontFamily,
         marginLeft: 5,
         marginTop: 5,
         lineHeight: 24,
@@ -116,5 +156,10 @@ const styles = StyleSheet.create({
         color: '#FFF',
         backgroundColor: 'gray',
         textAlign: 'center'
+    },
+    date: {
+        fontSize: 12,
+        padding: 5,
+        fontFamily: commonStyles.fontFamily
     }
 })

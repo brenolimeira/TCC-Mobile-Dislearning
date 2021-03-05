@@ -1,7 +1,9 @@
 rootProject.name = 'tasksUser'
 //include ':react-native-voice'
 //project(':react-native-voice').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-voice/android')
-include ':@react-native-community_voice'
-project(':@react-native-community_voice').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/voice/android')
+/* include ':@react-native-community_voice'
+project(':@react-native-community_voice').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/voice/android') */
+include ':react-native-audio-recorder-player'
+project(':react-native-audio-recorder-player').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-audio-recorder-player/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'

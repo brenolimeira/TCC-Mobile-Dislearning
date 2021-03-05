@@ -1,9 +1,11 @@
 const multer = require('multer')
 const { storage } = require('./upload')
 const { storageAudio } = require('./uploadAudio')
+const { storageAudioPatient } = require('./uploadAudioPatient')
 
 const upload = multer({ storage: storage })
 const uploadAudio = multer({ storage: storageAudio })
+const uploadAudioPatient = multer({ storage: storageAudioPatient })
 
 module.exports = app => {
     app.post('/signup', app.api.user.save)
@@ -13,6 +15,10 @@ module.exports = app => {
 
     app.route('/users')
         .get(app.api.user.getUsers)
+
+    app.route('/user-by-id')
+        .all(app.config.passport.authenticate())
+        .get(app.api.user.getUserById)
 
     app.route('/users/:name/name')
         .get(app.api.user.getUsersName)
@@ -144,6 +150,9 @@ module.exports = app => {
     app.route('/task-word-by-id/:id')
         .get(app.api.tasks_words_done.getWordsId)
 
+    app.route('/tasks-resources-all')
+        .get(app.api.tasks_words_done.getResourcesAllDone)
+
     app.route('/save-audio')
         .post(uploadAudio.array('audio') ,app.api.audio.save)
 
@@ -152,7 +161,7 @@ module.exports = app => {
 
     app.route('/audio-delete/:id')
         .delete(app.api.audio.remove)
-
+        
     app.route('/audio-delete-file/:id')
         .delete(app.api.audio.removeAudio)
 
@@ -171,5 +180,9 @@ module.exports = app => {
     app.route('/message-send-patient')
         .all(app.config.passport.authenticate())
         .post(app.api.messages.saveMsgPatient)
+
+    app.route('/fono-by-id')
+        .all(app.config.passport.authenticate())
+        .get(app.api.fono.getFonoById)
 
 }

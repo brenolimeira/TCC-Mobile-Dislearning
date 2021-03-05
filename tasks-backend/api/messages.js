@@ -10,6 +10,35 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getMessagesFonoSocket = (fono_id, user_id) => {
+
+        return new Promise(resolve => {
+            app.db('messages')
+                .where({ fono_id: fono_id, user_id: user_id })
+                .orderBy('createdAt')
+                .then(messages => resolve(messages))
+                .catch(err => res.status(400).json(err))
+        })
+
+    }
+
+    const saveMsgFonoSocket = (messages) => {
+
+        return new Promise(resolve => {
+            app.db('messages')
+                .insert({
+                    createdAt: messages.createdAt,
+                    text: messages.text,
+                    type_sender: messages.type_sender,
+                    user_id: messages.patient_id,
+                    fono_id: messages.fono_id
+                })
+                .then(result => resolve(result))
+                .catch(err => res.status(400).json(err))
+        })
+
+    }
+
     const getMessagesPatient = (req, res) => {
 
         app.db('messages')
@@ -68,5 +97,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { saveMsgFono, remove, saveMsgPatient, getMessagesFono, getMessagesPatient }
+    return { saveMsgFono, remove, saveMsgPatient, getMessagesFono, getMessagesPatient, getMessagesFonoSocket, saveMsgFonoSocket }
 }

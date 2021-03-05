@@ -39,12 +39,13 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    const getFonosName = (req, res) => {
+    const getFonoById = (req, res) => {
         app.db('fono')
-            .where('name', 'ilike', `%${req.params.name}%`)
+            .where({ id: req.user.id })
+            .first()
             .then(users => res.json(users))
             .catch(err => res.status(400).json(err))
     }
 
-    return { save, getFonos, getFonosName, remove }
+    return { save, getFonos, getFonoById, remove }
 }

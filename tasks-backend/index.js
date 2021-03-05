@@ -2,7 +2,11 @@ const app = require('express')()
 const db = require('./config/db')
 const consign = require('consign')
 const server = require('http').createServer(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*'
+    }
+})
 
 consign()
     .include('./config/passport.js')
@@ -12,6 +16,30 @@ consign()
     .into(app)
 
 app.db = db
+
+const emitMessages = (fono_id, user_id) => {
+
+    app.api.messages.getMessagesFonoSocket(fono_id, user_id)
+        .then(result => io.emit("chat messages", result))
+        .catch(console.log)
+}
+
+io.on("connection", socket => {
+
+    socket.on("chat messages", msg => {
+
+        app.api.messages.saveMsgFonoSocket(msg)
+            .then(_ => {
+                emitMessages(msg.fono_id, msg.patient_id)
+            })
+            .catch(err => io.emit(err))
+
+    })
+
+    socket.on("disconnect", () => {
+        console.log("usuário desconectado");
+    })
+})
 
 /* const getMessagesFonoSocket = (req, res) => {
 

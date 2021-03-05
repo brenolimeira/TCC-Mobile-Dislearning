@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -18,6 +18,14 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import commonStyles from '../commonStyles'
 import { useNavigation } from '@react-navigation/native';
 
+import AudioRecorderPlayer, {
+	AVEncoderAudioQualityIOSType,
+	AVEncodingOption,
+	AudioEncoderAndroidType,
+	AudioSet,
+	AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player'
+
 export default function Speech({ route }) {
 
 	const [error, setError] = useState('')
@@ -25,126 +33,57 @@ export default function Speech({ route }) {
 	const [started, setStarted] = useState('')
 	const [results, setResults] = useState('')
 
+	const [recordSec, setRecordsSec] = useState(0)
+	const [recordTime, setRecordTime] = useState('00:00:00')
+	const [record, setRecord] = useState(false)
+
+	const audioRecorderPlayer = new AudioRecorderPlayer()
+
 	const navigation = useNavigation()
 
-	useEffect(() => {
-		function onSpeechStart(e) {
-			console.log('onSpeechStart: ', e)
-			setStarted('√')
-		}
+	const onStartRecord = async () => {
+		const path = `sdcard/Download/${Date.now()}.mp3`
 
-		function onSpeechResults(e) {
-			console.log('onSpeechResults: ', e)
-			setResults(e.value)
+		const audioSet = {
+			AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+			AudioSourceAndroid: AudioSourceAndroidType.MIC,
+			AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+			AVNumberOfChannelsKeyIOS: 2,
+			AVFormatIDKeyIOS: AVEncodingOption.aac,
 		}
+		console.log('audioSet', audioSet)
 
-		function onSpeechEnd(e) {
-			console.log('onSpeechEnd: ', e)
-			setEnd('√')
-	
-			Alert.alert('Sucesso!', `Tarefa concluída!`)
-			/* verifyWordsEquals()
-			changeDoneAt() */
-			// Acho que terá que navegar para Auth or App
-			// this.props.navigation.navigate('AuthOrApp')
-			navigation.navigate('Home')
-		}
-	
-		function onSpeechError(e) {
-			console.log('onSpeechError: ', e)
-			setError(JSON.stringify(e.error))
-	
-			Alert.alert('Erro Voz!', 'Problema ao reconhecer a voz! Tente novamente...')
-		}
+		const uri = await audioRecorderPlayer.startRecorder(path, audioSet)
 
-		Voice.onSpeechStart = onSpeechStart
-		Voice.onSpeechStart = onSpeechResults
-		Voice.onSpeechEnd = onSpeechEnd
-		Voice.onSpeechError = onSpeechError
+		setRecord(true)
 
-		return () => {
-			Voice.destroy().then(Voice.removeAllListeners)
-		}
-	}, [])
+		audioRecorderPlayer.addRecordBackListener(e => {
+			setRecordsSec(e.current_position),
+				setRecordTime(audioRecorderPlayer.mmssss(
+					Math.floor(e.current_position)
+				))
+		})
 
-	const _startRecognizing = async () => {
-		setError('')
-		setStarted('')
-		setResults('')
-		setEnd('')
-
-		try {
-			await Voice.start('pt-BR')
-		} catch (e) {
-			console.error(e);
-		}
+		console.log(`uri: ${uri}`)
 	}
 
-	const _stopRecognizing = async () => {
-		setError('')
-		setStarted('')
-		setResults('')
-		setEnd('')
+	const onStopRecord = async () => {
+		const result = await audioRecorderPlayer.stopRecorder()
+		audioRecorderPlayer.removeRecordBackListener()
 
-		const result = await Voice.stop()
-		Voice.removeAllListeners()
+		setRecord(false)
+		setRecordsSec(0)
 
-		Alert.alert(`resultado: ${result}`)
-	}
-
-	const _cancelRecognizing = async () => {
-		try {
-			await Voice.cancel()
-		} catch (e) {
-			console.error(e);
-		}
-		// Acho que terá que navegar para Auth or App
-		// this.props.navigation.navigate('AuthOrApp')
 		navigation.navigate('Home')
+
+		console.log(result)
 	}
-
-	const _destroyRecognizer = async () => {
-		try {
-			await Voice.destroy()
-		} catch (e) {
-			console.error(e)
-		}
-		setError('')
-		setStarted('')
-		setResults('')
-		setEnd('')
-
-	}
-
-	/* const changeDoneAt = async () => {
-		try {
-			await axios.put(`${server}/words/${route.params.id}/${route.params.taskId}/toggle`)
-		} catch (e) {
-			showError(e)
-		}
-	}
-
-	const verifyWordsEquals = async () => {
-		if (results === params.word) {
-			try {
-				await axios.put(`${server}/words/${route.params.id}/correct/${route.params.taskId}/toggle`)
-			} catch (e) {
-				showError(e)
-			}
-		} else {
-			try {
-				await axios.put(`${server}/words/${route.params.id}/wrong/${route.params.taskId}/toggle`)
-			} catch (e) {
-				showError(e)
-			}
-		}
-	} */
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<View style={styles.container}>
 				<View style={styles.msg}>
-					{ route.params.word !== '' ?
+					{route.params.word !== '' ?
 						<Text style={styles.instructions}>
 							Que palavra é essa ?
 						</Text>
@@ -155,12 +94,12 @@ export default function Speech({ route }) {
 					}
 				</View>
 				<View style={styles.item}>
-					{ route.params.word !== '' ? 
+					{route.params.word !== '' ?
 						<Text style={styles.welcome}>
 							{route.params.word}
-						</Text> 
-						: 
-						<Image style={styles.image}  source={{
+						</Text>
+						:
+						<Image style={styles.image} source={{
 							uri: route.params.source
 						}} />
 					}
@@ -168,30 +107,20 @@ export default function Speech({ route }) {
 				<View style={styles.buttonMicro}>
 					<Text style={{ textAlign: 'center', fontSize: 20, color: '#b65a76' }} >{started}</Text>
 					<TouchableHighlight
-						onPress={_startRecognizing}
+						onPress={() => {
+							record ? onStopRecord() : onStartRecord()
+						}}
 						/* style={{ marginVertical: 20 }} */>
 						<View style={styles.button}>
-							<Icon name='play-circle' size={80} color='#b65a76' />
+							{record ? (
+								<Icon name='stop-circle' size={80} color='#b65a76' />
+							) : (
+								<Icon name='play-circle' size={80} color='#b65a76' />
+							)}
 						</View>
 					</TouchableHighlight>
-					<Text style={styles.startText}>Iniciar</Text>
+					<Text style={styles.startText}>{record ? 'Finalizar': 'Iniciar'}</Text>
 				</View>
-				{/* <View
-					style={styles.titleStartEnd}>
-					<Text style={styles.startedText}>
-						{`Iniciado: ${started}`}
-					</Text>
-					<Text style={styles.endText}>
-						{`Finalizado: ${end}`}
-					</Text>
-				</View>
-				<View style={styles.space} /> */}
-				{/* <Text style={styles.stat}>Resultado</Text>
-				<ScrollView style={{ marginBottom: 42 }}>
-					<Text style={styles.stat}>
-						{results}
-					</Text>
-				</ScrollView> */}
 			</View>
 		</SafeAreaView>
 	);
@@ -213,8 +142,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		alignItems: 'center',
 		justifyContent: 'center',
-		/* borderBottomWidth: 2,
-		borderBottomColor: '#b65a76', */
 	},
 	msg: {
 		flex: 1,
