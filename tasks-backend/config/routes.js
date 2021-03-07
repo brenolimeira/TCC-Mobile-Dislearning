@@ -153,6 +153,9 @@ module.exports = app => {
     app.route('/tasks-resources-all')
         .get(app.api.tasks_words_done.getResourcesAllDone)
 
+    app.route('/save-task-done-sound')
+        .post(uploadAudioPatient.single('sound'), app.api.tasks_words_done.save)
+
     app.route('/save-audio')
         .post(uploadAudio.array('audio') ,app.api.audio.save)
 

@@ -120,11 +120,11 @@ export default function WordsList({ route }) {
     }
 
     const navigateTo = e => {
-        return navigation.navigate('Speech', { id: e.id, word: e.word, desc: '' })
+        return navigation.navigate('Speech', { id: e.id, word: e.word, desc: '', task_id: tempTaskId })
     }
 
     const navigateToImage = e => {
-        return navigation.navigate('Speech', { id: e.id, word: '', source: `${server}/uploads/${e.image}` })
+        return navigation.navigate('Speech', { id: e.id, word: '', source: `${server}/uploads/${e.image}`, task_id: tempTaskId  })
     }
 
     return (

@@ -48,10 +48,6 @@ const TabsScreen = () => (
           iconName = focused
             ? 'ios-home'
             : 'ios-home-outline'
-        } else if (route.name === 'Notificações') {
-          iconName = focused
-            ? 'notifications'
-            : 'notifications-outline'
         } else {
           iconName = focused 
             ? 'chatbubbles'
@@ -69,7 +65,6 @@ const TabsScreen = () => (
       }
     }} >
     <Tabs.Screen name="Início" component={TaskList} />
-    <Tabs.Screen name="Notificações" component={Notifications} />
     <Tabs.Screen name="Menssagens" component={Messages} />
   </Tabs.Navigator>
 )

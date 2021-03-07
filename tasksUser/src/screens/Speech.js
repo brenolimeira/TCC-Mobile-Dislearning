@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -36,13 +36,21 @@ export default function Speech({ route }) {
 	const [recordSec, setRecordsSec] = useState(0)
 	const [recordTime, setRecordTime] = useState('00:00:00')
 	const [record, setRecord] = useState(false)
+	const [sound, setSound] = useState({
+		uri: '',
+		type: '',
+		name: Date.now()
+	})
 
 	const audioRecorderPlayer = new AudioRecorderPlayer()
 
 	const navigation = useNavigation()
 
 	const onStartRecord = async () => {
-		const path = `sdcard/Download/${Date.now()}.mp3`
+
+		const name = Date.now()
+		
+		const pathStart = `sdcard/Download/${name}.mp3`
 
 		const audioSet = {
 			AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -53,7 +61,8 @@ export default function Speech({ route }) {
 		}
 		console.log('audioSet', audioSet)
 
-		const uri = await audioRecorderPlayer.startRecorder(path, audioSet)
+		const uri = await audioRecorderPlayer.startRecorder(pathStart, audioSet)
+		setSound({ uri: uri, name: name, type: 'audio/mp3' })
 
 		setRecord(true)
 
@@ -71,10 +80,31 @@ export default function Speech({ route }) {
 		const result = await audioRecorderPlayer.stopRecorder()
 		audioRecorderPlayer.removeRecordBackListener()
 
+		const data = new FormData()
+		
+		data.append('sound', sound)
+		data.append('dateDone', new Date())
+		data.append('task_id', route.params.task_id)
+
+		if(route.params.word !== '') {
+			data.append('word_id', route.params.id)
+		} else {
+			data.append('image_id', route.params.id)
+		}
+
+		console.log(sound)
+
+		try {
+			axios.post(`${server}/save-task-done-sound`, data).then(() => {
+				navigation.navigate('Home')
+			})
+		} catch(e) {
+			showError(e)
+		}
+
 		setRecord(false)
 		setRecordsSec(0)
-
-		navigation.navigate('Home')
+		/* navigation.navigate('Home') */
 
 		console.log(result)
 	}

@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     },
     messages: {
         flex: 8,
+        backgroundColor: '#FFF'
     },
     inputs: {
         flex: 1,

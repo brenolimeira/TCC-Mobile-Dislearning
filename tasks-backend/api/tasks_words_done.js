@@ -43,10 +43,28 @@ module.exports = app => {
 
         /* req.body.userId = req.user.id */
 
-        app.db('tasks_words_done')
-            .insert(req.body)
+        if(req.body.word_id) {
+            app.db('tasks_words_done')
+                .insert({
+                    dateDone: req.body.dateDone,
+                    sound: req.file.filename,
+                    task_id: req.body.task_id,
+                    word_id: req.body.word_id
+                })
+                .then(_ => res.status(204).send())
+                .catch(err => res.status(400).json(err))
+        } else {
+            app.db('tasks_words_done')
+            .insert({
+                dateDone: req.body.dateDone,
+                sound: req.file.filename,
+                task_id: req.body.task_id,
+                image_id: req.body.image_id
+            })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
+        }
+
     }
 
     const remove = (req, res) => {
