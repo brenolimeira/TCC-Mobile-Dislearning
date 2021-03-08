@@ -46,7 +46,7 @@ module.exports = app => {
     const getTasksProcesseId = (req, res) => {
 
         app.db('tasks')
-            .where({ processesId: req.params.processeId}) //retirar essa linha
+            .where({ processes_id: req.params.processeId}) //retirar essa linha
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }
@@ -55,7 +55,7 @@ module.exports = app => {
 
         app.db('tasks')
             .distinct('tasks.id as id','tasks.name as name', 'tasks.desc as desc', 'processes.name as name_processe')
-            .join('processes', 'tasks.processesId', '=', 'processes.id')
+            .join('processes', 'tasks.processes_id', '=', 'processes.id')
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
     }

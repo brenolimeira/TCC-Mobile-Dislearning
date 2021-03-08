@@ -36,11 +36,12 @@ export default function Speech({ route }) {
 	const [recordSec, setRecordsSec] = useState(0)
 	const [recordTime, setRecordTime] = useState('00:00:00')
 	const [record, setRecord] = useState(false)
-	const [sound, setSound] = useState({
+	const [sound, setSound] = useState('Placa.mp3')
+	/* const [sound, setSound] = useState({
 		uri: '',
 		type: '',
 		name: Date.now()
-	})
+	}) */
 
 	const audioRecorderPlayer = new AudioRecorderPlayer()
 
@@ -62,7 +63,7 @@ export default function Speech({ route }) {
 		console.log('audioSet', audioSet)
 
 		const uri = await audioRecorderPlayer.startRecorder(pathStart, audioSet)
-		setSound({ uri: uri, name: name, type: 'audio/mp3' })
+		/* setSound({ uri: uri, name: name, type: 'audio/mp3' }) */
 
 		setRecord(true)
 
@@ -92,10 +93,10 @@ export default function Speech({ route }) {
 			data.append('image_id', route.params.id)
 		}
 
-		console.log(sound)
+		console.log(data)
 
 		try {
-			axios.post(`${server}/save-task-done-sound`, data).then(() => {
+			await axios.post(`${server}/save-task-done-sound`, data).then(() => {
 				navigation.navigate('Home')
 			})
 		} catch(e) {

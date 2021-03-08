@@ -150,11 +150,15 @@ module.exports = app => {
     app.route('/task-word-by-id/:id')
         .get(app.api.tasks_words_done.getWordsId)
 
+    app.route('/done-update/:id')
+        .put(app.api.tasks_words_done.update)
+
     app.route('/tasks-resources-all')
         .get(app.api.tasks_words_done.getResourcesAllDone)
 
     app.route('/save-task-done-sound')
-        .post(uploadAudioPatient.single('sound'), app.api.tasks_words_done.save)
+        .all(app.config.passport.authenticate())
+        .post(app.api.tasks_words_done.save)
 
     app.route('/save-audio')
         .post(uploadAudio.array('audio') ,app.api.audio.save)

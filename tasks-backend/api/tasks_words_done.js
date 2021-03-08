@@ -43,13 +43,16 @@ module.exports = app => {
 
         /* req.body.userId = req.user.id */
 
+        console.log('aqui')
+
         if(req.body.word_id) {
             app.db('tasks_words_done')
                 .insert({
                     dateDone: req.body.dateDone,
-                    sound: req.file.filename,
+                    sound: req.body.sound,
                     task_id: req.body.task_id,
-                    word_id: req.body.word_id
+                    word_id: req.body.word_id,
+                    user_id: req.user.id
                 })
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(400).json(err))
@@ -57,14 +60,24 @@ module.exports = app => {
             app.db('tasks_words_done')
             .insert({
                 dateDone: req.body.dateDone,
-                sound: req.file.filename,
+                sound: req.body.sound,
                 task_id: req.body.task_id,
-                image_id: req.body.image_id
+                image_id: req.body.image_id,
+                user_id: req.user.id
             })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
         }
 
+    }
+
+    const update = (req, res) => {
+
+        app.db('tasks_words_done')
+            .where({ id: req.params.id })
+            .update({ formEvaluation: req.body.formEvaluation, pcc: req.body.pcc })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
     }
 
     const remove = (req, res) => {
@@ -82,5 +95,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasksWordsDone, save, remove, getTasksImagesDone, getWordsId, getResourcesAllDone }
+    return { getTasksWordsDone, save, update, remove, getTasksImagesDone, getWordsId, getResourcesAllDone }
 }

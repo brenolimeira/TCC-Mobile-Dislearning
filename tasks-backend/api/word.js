@@ -60,7 +60,7 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    const update = (req, res, word) => {
+    const update = (req, res) => {
         if(!req.body.word.trim()) {
             return res.status(400).send('Palavra é um campo obrigatório!')
         }
