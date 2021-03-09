@@ -10,6 +10,7 @@ exports.up = function(knex) {
         table.integer('user_id').references('id').inTable('users').notNull().onUpdate('CASCADE').onDelete('CASCADE')
         table.integer('word_id').references('id').inTable('words').onUpdate('CASCADE').onDelete('CASCADE')
         table.integer('image_id').references('id').inTable('image').onUpdate('CASCADE').onDelete('CASCADE')
+        table.integer('audio_id').references('id').inTable('audio').onUpdate('CASCADE').onDelete('CASCADE')
     })
 };
 

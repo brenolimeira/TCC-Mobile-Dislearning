@@ -116,8 +116,8 @@ export default function TaskList({ navigation }) {
         navigation.navigate('Speech') */
 
         tasks1.forEach(task => {
-            if (task.taskId === taskId) {
-                navigation.navigate('WordsList', { idTask: task.taskId, days: task.daysAll })
+            if (task.task_id === taskId) {
+                navigation.navigate('WordsList', { idTask: task.task_id, days: task.daysAll })
                 /* this.props.navigation.push('WordsList', { idTask: task.id }) */
             }
         })

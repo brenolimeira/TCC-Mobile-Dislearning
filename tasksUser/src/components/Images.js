@@ -9,9 +9,10 @@ import { server, showError } from '../common'
 export default props => {
 
     const [countDone, setCountDone] = useState([])
+    const [count, setCount] = useState(0)
 
     /* const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through', color: '#AAA' } : {  } */
-    const enableOrDisable = countDone.length === props.days ? true : false
+    const enableOrDisable = count === props.days ? true : false
 
 
     useEffect(() => {
@@ -23,6 +24,7 @@ export default props => {
         try{
             await axios(`${server}/task-words-done/${props.taskId}/image/${props.id}`).then(resp => {
                 setCountDone(resp.data)
+                setCount(resp.data.length)
             })
         } catch(e) {
             showError(e)
@@ -39,7 +41,7 @@ export default props => {
                     </View> */}
                     <Text style={styles.words}>{props.desc}</Text>
                     <Text style={styles.words}></Text>
-                    <Text style={styles.words}>{`concluídos \n ${countDone.length} de ${props.days}`}</Text>
+                    <Text style={styles.words}>{`concluídos \n ${count} de ${props.days}`}</Text>
                 </View>
             </TouchableOpacity>
         </View>

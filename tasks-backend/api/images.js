@@ -51,6 +51,17 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getCountImageDoneAll = (req, res) => {
+
+        app.db('image')
+            .join('tasks_words_done', 'image.id', '=', 'tasks_words_done.image_id')
+            .andWhere('tasks_words_done.user_id', '=', req.params.user_id)
+            .andWhere('tasks_words_done.image_id', '=', req.params.image_id)
+            .whereNull('tasks_words_done.pcc')
+            .then(image => res.json(image))
+            .catch(err => res.status(400).json(err))
+    }
+
     const getImagesTaskIdt = (req, res) => {
 
         app.db('image')
@@ -156,6 +167,7 @@ module.exports = app => {
         update,
         getImagesTaskIdt,
         getImageById,
-        removeImage
+        removeImage,
+        getCountImageDoneAll
     }
 }

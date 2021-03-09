@@ -9,6 +9,7 @@ import Words from '../components/Words'
 import Images from '../components/Images'
 import commonStyles from '../commonStyles'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Audios from '../components/Audios'
 
 const { width, height } = Dimensions.get('screen')
 
@@ -16,6 +17,7 @@ export default function WordsList({ route }) {
 
     const [words, setWords] = useState([])
     const [images, setImages] = useState([])
+    const [audios, setAudios] = useState([])
     const [tempTaskId, setTempTaskId] = useState(route.params.idTask)
     const [nameTask, setNameTask] = useState('')
     const navigation = useNavigation()
@@ -94,6 +96,36 @@ export default function WordsList({ route }) {
                             }} />
                     )
                 }) : null}
+
+                {audios.length !== 0 ? audios.map((audio, i) => {
+                    const inputRange = [(i - 1) * width, i * width, (i + 1) * width]
+                    const scale = scrollx.interpolate({
+                        inputRange,
+                        outputRange: [0.8, 1.4, 0.8],
+                        extrapolate: 'clamp'
+                    })
+
+                    const opacity = scrollx.interpolate({
+                        inputRange,
+                        outputRange: [0.6, 0.9, 0.6],
+                        extrapolate: 'clamp'
+                    })
+                    return (
+                        <Animated.View
+                            key={`Indicator-${audio.id}`}
+                            style={{
+                                height: 10,
+                                width: 10,
+                                borderRadius: 5,
+                                backgroundColor: '#b65a76',
+                                margin: 10,
+                                transform: [{
+                                    scale
+                                }],
+                                opacity
+                            }} />
+                    )
+                }) : null}
             </View>
         )
     }
@@ -104,11 +136,14 @@ export default function WordsList({ route }) {
             /* const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59') */
             const res = await axios.get(`${server}/wordsTask/${tempTaskId}`)
             const resp = await axios.get(`${server}/images-task/${tempTaskId}`)
+            const respon = await axios.get(`${server}/audio-task-user/${tempTaskId}`)
 
             if (res.data.length !== 0) {
                 setWords(res.data)
             } else if (resp.data.length !== 0) {
                 setImages(resp.data)
+            } else if (respon.data.length !== 0) {
+                setAudios(respon.data)
             }
 
             await axios(`${server}/task-id/${tempTaskId}`).then(resp => {
@@ -120,11 +155,15 @@ export default function WordsList({ route }) {
     }
 
     const navigateTo = e => {
-        return navigation.navigate('Speech', { id: e.id, word: e.word, desc: '', task_id: tempTaskId })
+        return navigation.navigate('Speech', { id: e.word_id, word: e.word, type: 'word', desc: '', task_id: tempTaskId })
     }
 
     const navigateToImage = e => {
-        return navigation.navigate('Speech', { id: e.id, word: '', source: `${server}/uploads/${e.image}`, task_id: tempTaskId  })
+        return navigation.navigate('Speech', { id: e.image_id, word: '', type: 'image',source: `${server}/uploads/${e.image}`, task_id: tempTaskId  })
+    }
+
+    const navigateToAudio = e => {
+        return navigation.navigate('Speech', { id: e.audio_id, word: '', type: 'audio', source: `${server}/audios-patient/${e.audio}`, task_id: tempTaskId  })
     }
 
     return (
@@ -167,7 +206,21 @@ export default function WordsList({ route }) {
                     : null
                 }
 
-                {words.length === 0 && images.length === 0 ?
+                {audios.length !== 0 ?
+                    <Animated.FlatList data={audios} keyExtractor={item => `${item.id}`}
+                        horizontal scrollEventThrottle={32} pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { x: scrollx } } }],
+                            { useNativeDriver: false }
+                        )}
+                        renderItem={({ item }) => <Audios {...item} days={route.params.days}
+                            taskId={tempTaskId}
+                            size={audios.length} onNavigate={navigateToAudio} />} />
+                    : null
+                }
+
+                {words.length === 0 && images.length === 0 && audios.length === 0 ?
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name='info-circle' size={50} color='#b65a76' />
                         <Text style={styles.text}>Infelizmente não há nenhum item cadatrado para essa atividade</Text>

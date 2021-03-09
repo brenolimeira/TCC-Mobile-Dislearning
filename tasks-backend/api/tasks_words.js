@@ -6,7 +6,7 @@ module.exports = app => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
         app.db('task_words')
-            .where({ taskId: req.params.idTask })
+            .where({ task_id: req.params.idTask })
             .then(tasks => res.json(tasks))
             .catch(err => res.status(400).json(err))
     }

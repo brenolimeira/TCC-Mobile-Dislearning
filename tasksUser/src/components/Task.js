@@ -17,7 +17,9 @@ export default props => {
 
     const [taskDesc, setTaskDesc] = useState('')
 
-    axios(`${server}/task-id/${props.taskId}`).then(resp => {
+    console.log(props.task_id)
+
+    axios(`${server}/task-id/${props.task_id}`).then(resp => {
         setTaskDesc(resp.data[0].name)
     })
 
@@ -25,7 +27,7 @@ export default props => {
         <View style={styles.flats}>
             <View style={styles.all}>
                 <Text style={styles.taskName}>{taskDesc}</Text>
-                <TouchableOpacity style={styles.touch} onPress={() => props.onShow(props.taskId)} 
+                <TouchableOpacity style={styles.touch} onPress={() => props.onShow(props.task_id)} 
                     disabled={enableOrDisable}>
                     <View style={styles.container}>
                         {/* <View>

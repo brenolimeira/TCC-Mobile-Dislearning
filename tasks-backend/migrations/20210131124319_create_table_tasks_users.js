@@ -7,8 +7,8 @@ exports.up = function(knex) {
         table.integer('daysAll')
         table.integer('weekAll')
         table.boolean('done')
-        table.integer('userId').references('id').inTable('users').notNull().onUpdate('CASCADE').onDelete('CASCADE')
-        table.integer('taskId').references('id').inTable('tasks').notNull().onUpdate('CASCADE').onDelete('CASCADE')
+        table.integer('user_id').references('id').inTable('users').notNull().onUpdate('CASCADE').onDelete('CASCADE')
+        table.integer('task_id').references('id').inTable('tasks').notNull().onUpdate('CASCADE').onDelete('CASCADE')
     })
 };
 

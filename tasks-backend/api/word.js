@@ -47,6 +47,30 @@ module.exports = app => {
         app.db('words')
             .join('tasks_words_done', 'words.id', '=', 'tasks_words_done.word_id')
             .where('tasks_words_done.word_id', '=', req.params.word_id)
+            .whereNull('tasks_words_done.pcc')
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
+    const getCountWordDoneAll = (req, res) => {
+
+        app.db('words')
+            .join('tasks_words_done', 'words.id', '=', 'tasks_words_done.word_id')
+            .andWhere('tasks_words_done.user_id', '=', req.params.user_id)
+            .andWhere('tasks_words_done.word_id', '=', req.params.word_id)
+            .whereNull('tasks_words_done.pcc')
+            .then(words => res.json(words))
+            .catch(err => res.status(400).json(err))
+    }
+
+    const getCountWordDoneUser = (req, res) => {
+
+        app.db('words')
+            .join('tasks_words_done', 'words.id', '=', 'tasks_words_done.word_id')
+            .where('tasks_words_done.word_id', '=', req.params.word_id)
+            .andWhere('tasks_words_done.user_id', '=', req.params.user_id)
+            .andWhere('tasks_words_done.pcc', '!=', '')
+            .orderBy('tasks_words_done.dateDone')
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
     }
@@ -106,7 +130,9 @@ module.exports = app => {
             getWordsTaskIdt, 
             getCountWordDone,
             getCountTest, 
-            getWordById }
+            getWordById,
+            getCountWordDoneUser,
+            getCountWordDoneAll }
 }
 /* const moment = require('moment')
 

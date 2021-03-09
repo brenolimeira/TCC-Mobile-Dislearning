@@ -47,6 +47,14 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getUserByIdNotLogged = (req, res) => {
+        app.db('users')
+            .where({ id: req.params.id })
+            .first()
+            .then(users => res.json(users))
+            .catch(err => res.status(400).json(err))
+    }
+
     /* const getUsersId = (req, res) => {
         app.db('users')
             .where({ id: req.params.id })
@@ -61,5 +69,11 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { save, getUsers, getUsersName, remove, getUserById }
+    return { save, 
+            getUsers, 
+            getUsersName, 
+            remove, 
+            getUserById, 
+            getUserByIdNotLogged 
+        }
 }

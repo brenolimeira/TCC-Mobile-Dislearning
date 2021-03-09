@@ -25,14 +25,16 @@ module.exports = app => {
 
     const getTasksUserFono = (req, res) => {
         app.db('tasks')
-            .join('tasks_users', 'tasks.id', '=', 'tasks_users.taskId')
-            .where('tasks_users.userId', '=', req.params.id)
+            .join('tasks_users', 'tasks.id', '=', 'tasks_users.task_id')
+            .where('tasks_users.user_id', '=', req.params.id)
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
     }
 
     const getTasksUserId = (req, res) => {
-        const date = req.query.date ? req.query.date : moment().endOf('day').toDate()
+        const date = moment().endOf('day').toDate()
+
+        console.log()
 
         app.db('tasks')
             //.where({ userId: req.user.id, estimateAt: date }) adicionar essa linha no final

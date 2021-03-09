@@ -20,6 +20,9 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.user.getUserById)
 
+    app.route('/user-for-task/:id')
+        .get(app.api.user.getUserByIdNotLogged)
+
     app.route('/users/:name/name')
         .get(app.api.user.getUsersName)
 
@@ -54,6 +57,9 @@ module.exports = app => {
     app.route('/wordsTask/:id')
         .get(app.api.word.getWordsTaskIdt)
 
+    app.route('/audio-task-user/:id')
+        .get(app.api.audio.getAudiosTaskIdt)
+
     app.route('/word-by-id/:id')
         .get(app.api.word.getWordById)
 
@@ -77,6 +83,18 @@ module.exports = app => {
 
     app.route('/wordsDone/:id/done/:word_id')
         .get(app.api.word.getCountWordDone)
+
+    app.route('/word-done-all/:user_id/done/:word_id')
+        .get(app.api.word.getCountWordDoneAll)
+
+    app.route('/image-done-all/:user_id/done/:image_id')
+        .get(app.api.images.getCountImageDoneAll)
+
+    app.route('/image-done-all/:user_id/done/:image_id')
+        .get(app.api.audio.getCountAudioDoneAll)
+
+    app.route('/word-done-rated/:user_id/done/:word_id')
+        .get(app.api.word.getCountWordDoneUser)
 
     app.route('/word-done-count/:id')
         .get(app.api.word.getCountTest)
@@ -128,6 +146,9 @@ module.exports = app => {
     app.route('/task-images/:idTask/save')
         .post(app.api.tasks_images.save)
 
+    app.route('/task-audios/:idTask/save')
+        .post(app.api.tasks_audios.save)
+
     app.route('/task-user')
         .post(app.api.tasks_users.save)
 
@@ -147,16 +168,25 @@ module.exports = app => {
     app.route('/task-words-done/:taskId/image/:imageId')
         .get(app.api.tasks_words_done.getTasksImagesDone)
 
+    app.route('/task-words-done/:taskId/audio/:audio_id')
+        .get(app.api.tasks_words_done.getTasksAudiosDone)
+
     app.route('/task-word-by-id/:id')
         .get(app.api.tasks_words_done.getWordsId)
 
-    app.route('/done-update/:id')
+    app.route('/done-update/:user_id/:word_id/:date_done')
         .put(app.api.tasks_words_done.update)
+
+    app.route('/done-update-image/:user_id/:image_id/:date_done')
+        .put(app.api.tasks_words_done.updateImage)
+
+    app.route('/done-update-image/:user_id/:audio_id/:date_done')
+        .put(app.api.tasks_words_done.updateAudio)
 
     app.route('/tasks-resources-all')
         .get(app.api.tasks_words_done.getResourcesAllDone)
 
-    app.route('/save-task-done-sound')
+    app.route('/save-done-sound')
         .all(app.config.passport.authenticate())
         .post(app.api.tasks_words_done.save)
 

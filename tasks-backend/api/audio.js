@@ -19,6 +19,17 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getCountAudioDoneAll = (req, res) => {
+
+        app.db('audio')
+            .join('tasks_words_done', 'audio.id', '=', 'tasks_words_done.audio_id')
+            .andWhere('tasks_words_done.user_id', '=', req.params.user_id)
+            .andWhere('tasks_words_done.audio_id', '=', req.params.audio_id)
+            .whereNull('tasks_words_done.pcc')
+            .then(audio => res.json(audio))
+            .catch(err => res.status(400).json(err))
+    }
+
     const update = async (req, res) => {
 
         app.db('audio')
@@ -33,7 +44,7 @@ module.exports = app => {
         app.db('audio')
             .join('task_audios', 'audio.id', '=', 'task_audios.audio_id')
             .where('task_audios.task_id', '=', req.params.id)
-            .then(words => res.json(words))
+            .then(audio => res.json(audio))
             .catch(err => res.status(400).json(err))
     }
 
@@ -95,6 +106,7 @@ module.exports = app => {
         update,
         getAudiosTaskIdt,
         getAudioById,
-        removeAudio
+        removeAudio,
+        getCountAudioDoneAll
     }
 }

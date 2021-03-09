@@ -1,11 +1,16 @@
 
+const moment = require('moment')
+
 module.exports = app => {
 
     const getTasksWordsDone = (req, res) => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
+
         app.db('tasks_words_done')
             .where({ task_id: req.params.taskId, word_id: req.params.wordId })
+            .andWhere('dateDone', '<=', moment().endOf('day'))
+            .andWhere('dateDone', '>=', moment().startOf('day'))
             .then(task_words_done => res.json(task_words_done))
             .catch(err => res.status(400).json(err))
     }
@@ -36,14 +41,21 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const getTasksAudiosDone = (req, res) => {
+        /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
+
+        app.db('tasks_words_done')
+            .where({ task_id: req.params.taskId, audio_id: req.params.audio_id })
+            .then(task_words_done => res.json(task_words_done))
+            .catch(err => res.status(400).json(err))
+    }
+
     const save = (req, res) => {
         if(!req.body.task_id) {
             return res.status(400).send('Task Id é um campo obrigatório!')
         }
 
         /* req.body.userId = req.user.id */
-
-        console.log('aqui')
 
         if(req.body.word_id) {
             app.db('tasks_words_done')
@@ -74,8 +86,26 @@ module.exports = app => {
     const update = (req, res) => {
 
         app.db('tasks_words_done')
-            .where({ id: req.params.id })
-            .update({ formEvaluation: req.body.formEvaluation, pcc: req.body.pcc })
+            .where({ user_id: req.params.user_id, word_id: req.params.word_id, dateDone: req.params.date_done })
+            .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
+    const updateImage = (req, res) => {
+
+        app.db('tasks_words_done')
+            .where({ user_id: req.params.user_id, image_id: req.params.image_id, dateDone: req.params.date_done })
+            .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
+    const updateAudio = (req, res) => {
+
+        app.db('tasks_words_done')
+            .where({ user_id: req.params.user_id, audio_id: req.params.audio_id, dateDone: req.params.date_done })
+            .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
     }
@@ -95,5 +125,6 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasksWordsDone, save, update, remove, getTasksImagesDone, getWordsId, getResourcesAllDone }
+    return { getTasksWordsDone, save, update, updateImage, updateAudio,
+        remove, getTasksImagesDone, getTasksAudiosDone, getWordsId, getResourcesAllDone }
 }

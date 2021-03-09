@@ -15,6 +15,7 @@ import axios from 'axios'
 import { showError, server } from '../common'
 
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import commonStyles from '../commonStyles'
 import { useNavigation } from '@react-navigation/native';
 
@@ -50,8 +51,10 @@ export default function Speech({ route }) {
 	const onStartRecord = async () => {
 
 		const name = Date.now()
-		
+
 		const pathStart = `sdcard/Download/${name}.mp3`
+
+		console.log(server)
 
 		const audioSet = {
 			AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -81,7 +84,7 @@ export default function Speech({ route }) {
 		const result = await audioRecorderPlayer.stopRecorder()
 		audioRecorderPlayer.removeRecordBackListener()
 
-		const data = new FormData()
+		/* const data = new FormData()
 		
 		data.append('sound', sound)
 		data.append('dateDone', new Date())
@@ -93,13 +96,19 @@ export default function Speech({ route }) {
 			data.append('image_id', route.params.id)
 		}
 
-		console.log(data)
+		console.log(data) */
 
 		try {
-			await axios.post(`${server}/save-task-done-sound`, data).then(() => {
+			await axios.post(`${server}/save-done-sound`, {
+				sound: sound,
+				dateDone: new Date(),
+				task_id: route.params.task_id,
+				word_id: route.params.id
+			}).then(() => {
 				navigation.navigate('Home')
 			})
-		} catch(e) {
+		} catch (e) {
+			console.log(e)
 			showError(e)
 		}
 
@@ -114,14 +123,23 @@ export default function Speech({ route }) {
 		<SafeAreaView style={{ flex: 1 }}>
 			<View style={styles.container}>
 				<View style={styles.msg}>
-					{route.params.word !== '' ?
+					{route.params.type === 'word' ?
 						<Text style={styles.instructions}>
 							Que palavra é essa ?
 						</Text>
-						:
+						: null
+					}
+					{route.params.type === 'image' ?
 						<Text style={styles.instructions}>
 							O que tem na imagem ?
 						</Text>
+						: null
+					}
+					{route.params.type === 'audio' ?
+						<Text style={styles.instructions}>
+							Que som é esse ?
+						</Text>
+						: null
 					}
 				</View>
 				<View style={styles.item}>
@@ -146,11 +164,11 @@ export default function Speech({ route }) {
 							{record ? (
 								<Icon name='stop-circle' size={80} color='#b65a76' />
 							) : (
-								<Icon name='play-circle' size={80} color='#b65a76' />
+								<Icon2 name='record-circle' size={80} color='#b65a76' />
 							)}
 						</View>
 					</TouchableHighlight>
-					<Text style={styles.startText}>{record ? 'Finalizar': 'Iniciar'}</Text>
+					<Text style={styles.startText}>{record ? 'Finalizar' : 'Iniciar'}</Text>
 				</View>
 			</View>
 		</SafeAreaView>
