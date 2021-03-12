@@ -101,7 +101,7 @@ export default function Speech({ route }) {
 		try {
 			await axios.post(`${server}/save-done-sound`, {
 				sound: sound,
-				dateDone: new Date(),
+				date_done: new Date(),
 				task_id: route.params.task_id,
 				word_id: route.params.id
 			}).then(() => {

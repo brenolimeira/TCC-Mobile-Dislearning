@@ -27,8 +27,9 @@ export default function TaskList({ navigation }) {
     useEffect(() => {
         /* logged() */
         /* AsyncStorage.removeItem('itemsTask') */
+        console.log('aqui')
         loadTasks()
-    }, [tasks.id])
+    }, [tasks.length])
 
     const Indicator = ({ scrollx }) => {
         return (
@@ -87,12 +88,15 @@ export default function TaskList({ navigation }) {
     const loadTasks = async () => {
         try {
             await axios(`${server}/task-search-user`).then(resp => {
+                console.log(resp.data)
                 setTasks(resp.data)
             })
+            console.log('aqui')
             /* Alert.alert('aqui2') */
             /* await axios.get(`${server}/task-id/${res.data.id}`) */
         } catch (e) {
             /* showError(e) */
+            console.log(e)
         }
 
     }

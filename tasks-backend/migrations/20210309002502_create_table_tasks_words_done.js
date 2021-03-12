@@ -2,7 +2,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable('tasks_words_done', table => {
         table.increments('id').primary()
-        table.datetime('dateDone')
+        table.datetime('date_done')
         table.text('sound')
         table.string('formEvaluation')
         table.string('pcc')

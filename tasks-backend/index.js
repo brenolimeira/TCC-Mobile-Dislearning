@@ -10,6 +10,7 @@ const io = require('socket.io')(server, {
 
 consign()
     .include('./config/passport.js')
+    .include('./config/passportfono.js')
     .then('./config/middlewares.js')
     .then('./api')
     .then('./config/routes.js')

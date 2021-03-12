@@ -70,7 +70,7 @@ module.exports = app => {
             .where('tasks_words_done.word_id', '=', req.params.word_id)
             .andWhere('tasks_words_done.user_id', '=', req.params.user_id)
             .andWhere('tasks_words_done.pcc', '!=', '')
-            .orderBy('tasks_words_done.dateDone')
+            .orderBy('tasks_words_done.date_done')
             .then(words => res.json(words))
             .catch(err => res.status(400).json(err))
     }

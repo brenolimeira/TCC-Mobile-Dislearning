@@ -163,12 +163,15 @@ module.exports = app => {
         .get(app.api.task.getTasksUserFono)
 
     app.route('/task-words-done/:taskId/word/:wordId')
+        .all(app.config.passport.authenticate())
         .get(app.api.tasks_words_done.getTasksWordsDone)
 
     app.route('/task-words-done/:taskId/image/:imageId')
+        .all(app.config.passport.authenticate())
         .get(app.api.tasks_words_done.getTasksImagesDone)
 
     app.route('/task-words-done/:taskId/audio/:audio_id')
+        .all(app.config.passport.authenticate())
         .get(app.api.tasks_words_done.getTasksAudiosDone)
 
     app.route('/task-word-by-id/:id')
@@ -203,7 +206,7 @@ module.exports = app => {
         .delete(app.api.audio.removeAudio)
 
     app.route('/messages-fono/:patient_id')
-        .all(app.config.passport.authenticate())
+        .all(app.config.passportfono.authenticate())
         .get(app.api.messages.getMessagesFono)
 
     app.route('/messages-patient')
@@ -211,7 +214,7 @@ module.exports = app => {
         .get(app.api.messages.getMessagesPatient)
 
     app.route('/message-send-fono')
-        .all(app.config.passport.authenticate())
+        .all(app.config.passportfono.authenticate())
         .post(app.api.messages.saveMsgFono)
 
     app.route('/message-send-patient')
@@ -219,7 +222,7 @@ module.exports = app => {
         .post(app.api.messages.saveMsgPatient)
 
     app.route('/fono-by-id')
-        .all(app.config.passport.authenticate())
+        .all(app.config.passportfono.authenticate())
         .get(app.api.fono.getFonoById)
 
 }

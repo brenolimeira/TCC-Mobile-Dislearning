@@ -8,9 +8,9 @@ module.exports = app => {
 
 
         app.db('tasks_words_done')
-            .where({ task_id: req.params.taskId, word_id: req.params.wordId })
-            .andWhere('dateDone', '<=', moment().endOf('day'))
-            .andWhere('dateDone', '>=', moment().startOf('day'))
+            .where({ task_id: req.params.taskId, word_id: req.params.wordId, user_id: req.user.id })
+            .andWhere('date_done', '>=', moment().startOf('day'))
+            .andWhere('date_done', '<=', moment().endOf('day'))
             .then(task_words_done => res.json(task_words_done))
             .catch(err => res.status(400).json(err))
     }
@@ -36,7 +36,7 @@ module.exports = app => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
         app.db('tasks_words_done')
-            .where({ task_id: req.params.taskId, image_id: req.params.imageId })
+            .where({ task_id: req.params.taskId, image_id: req.params.imageId, user_id: req.user.id })
             .then(task_words_done => res.json(task_words_done))
             .catch(err => res.status(400).json(err))
     }
@@ -45,7 +45,7 @@ module.exports = app => {
         /* const date = req.query.date ? req.query.date : moment().endOf('day').toDate() */
 
         app.db('tasks_words_done')
-            .where({ task_id: req.params.taskId, audio_id: req.params.audio_id })
+            .where({ task_id: req.params.taskId, audio_id: req.params.audio_id, user_id: req.user.id })
             .then(task_words_done => res.json(task_words_done))
             .catch(err => res.status(400).json(err))
     }
@@ -60,7 +60,7 @@ module.exports = app => {
         if(req.body.word_id) {
             app.db('tasks_words_done')
                 .insert({
-                    dateDone: req.body.dateDone,
+                    date_done: req.body.date_done,
                     sound: req.body.sound,
                     task_id: req.body.task_id,
                     word_id: req.body.word_id,
@@ -71,7 +71,7 @@ module.exports = app => {
         } else {
             app.db('tasks_words_done')
             .insert({
-                dateDone: req.body.dateDone,
+                date_done: req.body.date_done,
                 sound: req.body.sound,
                 task_id: req.body.task_id,
                 image_id: req.body.image_id,
@@ -86,7 +86,7 @@ module.exports = app => {
     const update = (req, res) => {
 
         app.db('tasks_words_done')
-            .where({ user_id: req.params.user_id, word_id: req.params.word_id, dateDone: req.params.date_done })
+            .where({ user_id: req.params.user_id, word_id: req.params.word_id, date_done: req.params.date_done })
             .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
@@ -95,7 +95,7 @@ module.exports = app => {
     const updateImage = (req, res) => {
 
         app.db('tasks_words_done')
-            .where({ user_id: req.params.user_id, image_id: req.params.image_id, dateDone: req.params.date_done })
+            .where({ user_id: req.params.user_id, image_id: req.params.image_id, date_done: req.params.date_done })
             .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
@@ -104,7 +104,7 @@ module.exports = app => {
     const updateAudio = (req, res) => {
 
         app.db('tasks_words_done')
-            .where({ user_id: req.params.user_id, audio_id: req.params.audio_id, dateDone: req.params.date_done })
+            .where({ user_id: req.params.user_id, audio_id: req.params.audio_id, date_done: req.params.date_done })
             .update({ formEvaluation: req.body.formEvolution, pcc: req.body.pcc })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
